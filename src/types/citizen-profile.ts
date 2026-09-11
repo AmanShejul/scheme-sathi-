@@ -4,7 +4,7 @@ export type CitizenProfile = {
   age: string;
   gender: string;
   state: string;
-  district: string;
+  city: string;
   annualIncome: string;
   occupation: string;
   category: string;
@@ -17,8 +17,7 @@ export type CitizenProfile = {
     incomeCertificate: DocumentStatus;
     casteCertificate: DocumentStatus;
     domicileCertificate: DocumentStatus;
-    bonafideCertificate: DocumentStatus;
-    bankAccount: DocumentStatus;
+    studentId: DocumentStatus;
   };
 };
 
@@ -26,7 +25,7 @@ export const initialCitizenProfile: CitizenProfile = {
   age: "",
   gender: "",
   state: "",
-  district: "",
+  city: "",
   annualIncome: "",
   occupation: "",
   category: "",
@@ -39,7 +38,6 @@ export const initialCitizenProfile: CitizenProfile = {
     incomeCertificate: "",
     casteCertificate: "",
     domicileCertificate: "",
-    bonafideCertificate: "",
-    bankAccount: "",
+    studentId: "",
   },
 };

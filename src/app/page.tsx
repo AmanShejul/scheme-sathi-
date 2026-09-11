@@ -9,7 +9,6 @@ import {
   UserRound,
 } from "lucide-react";
 
-import { SiteHeader } from "@/components/layout/site-header";
 import { Button } from "@/components/ui/button";
 
 const steps = [
@@ -30,8 +29,6 @@ const features = [
 export default function Home() {
   return (
     <div className="min-h-screen bg-background">
-      <SiteHeader />
-
       <main>
         <section className="border-b border-border bg-[#fffaf6]">
           <div className="mx-auto flex w-full max-w-6xl flex-col items-start px-6 py-20 sm:px-10 sm:py-24 lg:px-12 lg:py-28">

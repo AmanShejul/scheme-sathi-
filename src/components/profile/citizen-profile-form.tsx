@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { useSchemeSathi } from "@/frontend/context/SchemeSathiContext";
 import { type CitizenProfile, initialCitizenProfile, type DocumentStatus } from "@/types/citizen-profile";
 
 const steps = ["About You", "Eligibility", "Documents", "Review"];
@@ -13,8 +14,7 @@ const documentFields: Array<{ key: keyof CitizenProfile["documents"]; label: str
   { key: "incomeCertificate", label: "Income Certificate" },
   { key: "casteCertificate", label: "Caste Certificate" },
   { key: "domicileCertificate", label: "Domicile Certificate" },
-  { key: "bonafideCertificate", label: "Bonafide Certificate" },
-  { key: "bankAccount", label: "Bank Account" },
+  { key: "studentId", label: "Student ID" },
 ];
 
 const fieldClassName =
@@ -60,8 +60,9 @@ function RadioGroup({
 
 export function CitizenProfileForm() {
   const router = useRouter();
+  const { citizenProfile, setCitizenProfile } = useSchemeSathi();
   const [step, setStep] = useState(0);
-  const [profile, setProfile] = useState<CitizenProfile>(initialCitizenProfile);
+  const [profile, setProfile] = useState<CitizenProfile>(citizenProfile ?? initialCitizenProfile);
   const [errors, setErrors] = useState<string[]>([]);
 
   function updateProfile<K extends keyof CitizenProfile>(field: K, value: CitizenProfile[K]) {
@@ -91,7 +92,7 @@ export function CitizenProfileForm() {
       if (!profile.age) missing.push("Age");
       if (!profile.gender) missing.push("Gender");
       if (!profile.state) missing.push("State");
-      if (!profile.district) missing.push("District");
+      if (!profile.city) missing.push("City");
     }
 
     if (step === 1) {
@@ -148,8 +149,8 @@ export function CitizenProfileForm() {
             </select>
           </div>
           <div>
-            <FieldLabel htmlFor="district">District</FieldLabel>
-            <input id="district" value={profile.district} onChange={(event) => updateProfile("district", event.target.value)} className={fieldClassName} placeholder="Enter your district" />
+            <FieldLabel htmlFor="city">City</FieldLabel>
+            <input id="city" value={profile.city} onChange={(event) => updateProfile("city", event.target.value)} className={fieldClassName} placeholder="Enter your city" />
           </div>
         </div>
       );
@@ -237,7 +238,7 @@ export function CitizenProfileForm() {
           ["Age", profile.age],
           ["Gender", profile.gender],
           ["State", profile.state],
-          ["District", profile.district],
+          ["City", profile.city],
         ]} />
         <SummarySection title="Eligibility" items={[
           ["Annual Family Income", profile.annualIncome],
@@ -280,7 +281,7 @@ export function CitizenProfileForm() {
 
         <div className="mt-10 flex flex-col-reverse gap-3 border-t border-border pt-6 sm:flex-row sm:justify-between">
           {step > 0 ? <Button type="button" variant="outline" onClick={() => { setErrors([]); setStep((current) => current - 1); }}>Back</Button> : <span />}
-          {step < steps.length - 1 ? <Button type="button" onClick={nextStep}>Next</Button> : <Button type="button" onClick={() => { if (validateCurrentStep()) router.push("/analysis"); }}>Analyze My Benefits</Button>}
+          {step < steps.length - 1 ? <Button type="button" onClick={nextStep}>Next</Button> : <Button type="button" onClick={() => { if (validateCurrentStep()) { setCitizenProfile(profile); router.push("/analysis"); } }}>Analyze My Benefits</Button>}
         </div>
       </div>
     </div>
