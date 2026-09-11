@@ -1,7 +1,7 @@
 import type { Bundle, ConflictResult } from "@/types/analysis-types";
 import type { Scheme } from "@/types/scheme-types";
 
-import { generateBundles } from "./bundleEngine";
+import { createBundleSearch, generateBundles } from "./bundleEngine";
 
 const baseScheme: Scheme = {
   id: "bundle-example-base",
@@ -86,6 +86,31 @@ export function runBundleEngineExamples() {
   if (uniqueBundleIds.size !== bundleEngineExamples.duplicateOrdering.length) {
     throw new Error("duplicateOrdering produced duplicate bundles.");
   }
+
+  const lazyThreeSchemeBundles: Bundle[] = [];
+  createBundleSearch([scheme("scheme-a"), scheme("scheme-b"), scheme("scheme-c")], []).forEach((bundle) => {
+    lazyThreeSchemeBundles.push(bundle);
+  });
+  const eagerThreeSchemeBundles = generateBundles([scheme("scheme-a"), scheme("scheme-b"), scheme("scheme-c")], []);
+  if (bundleIds(lazyThreeSchemeBundles).join(",") !== bundleIds(eagerThreeSchemeBundles).join(",")) {
+    throw new Error("Lazy and eager bundle generation diverged for a small input.");
+  }
+
+  const largeLazySearch = createBundleSearch(
+    Array.from({ length: 25 }, (_, index) => scheme(`large-scheme-${String(index).padStart(2, "0")}`)),
+    [],
+  );
+  const stopAfterSample = new Error("Stop large lazy search sample.");
+  let sampledBundles = 0;
+  try {
+    largeLazySearch.forEach(() => {
+      sampledBundles += 1;
+      if (sampledBundles === 1001) throw stopAfterSample;
+    });
+  } catch (error) {
+    if (error !== stopAfterSample) throw error;
+  }
+  if (sampledBundles !== 1001) throw new Error("Large lazy search did not stream the expected sample.");
 
   return bundleEngineExamples;
 }

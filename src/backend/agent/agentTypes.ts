@@ -10,6 +10,7 @@ import type { CitizenProfile } from "@/types/citizen-profile";
 import type { Scheme } from "@/types/scheme-types";
 
 import type { MissingInformationResult } from "../engines/missingInformationEngine";
+import type { BundleSearch } from "../engines/bundleEngine";
 
 export type AgentToolStatus = "started" | "completed" | "failed";
 
@@ -57,7 +58,7 @@ export type GenerateBundlesInput = {
 
 export type OptimizeBundleInput = {
   citizenProfile: CitizenProfile;
-  candidates: Bundle[];
+  candidates: Bundle[] | BundleSearch;
   eligibilityResults: EligibilityResult[];
   missingInformation: MissingInformationResult[];
 };
@@ -84,7 +85,7 @@ export type AgentToolRegistry = {
   evaluateEligibility: AgentTool<EvaluateEligibilityInput, EligibilityResult[]>;
   getMissingInformation: AgentTool<MissingInformationInput, MissingInformationResult>;
   detectConflicts: AgentTool<DetectConflictsInput, ConflictResult[]>;
-  generateBundles: AgentTool<GenerateBundlesInput, Bundle[]>;
+  generateBundles: AgentTool<GenerateBundlesInput, BundleSearch | Bundle[]>;
   optimizeBundle: AgentTool<OptimizeBundleInput, Bundle | null>;
   checkDocuments: AgentTool<CheckDocumentsInput, MissingDocument[]>;
   generateChecklist: AgentTool<GenerateChecklistInput, ApplicationStep[]>;

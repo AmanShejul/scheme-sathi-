@@ -84,7 +84,7 @@ export function runBundleOptimizerExamples() {
     ["tieBreakStrongMatches", "scheme-a"],
     ["fewerMissingInformation", "scheme-b"],
     ["equalScoresBySchemeId", "scheme-a"],
-    ["unresolvedInformation", "scheme-a"],
+    ["unresolvedInformation", null],
   ];
 
   expected.forEach(([name, expectedIds]) => {
@@ -94,9 +94,8 @@ export function runBundleOptimizerExamples() {
     }
   });
 
-  const unresolved = bundleOptimizerExamples.unresolvedInformation;
-  if (!unresolved || unresolved.score >= 100 || !unresolved.reasons.some((reason) => reason.includes("unresolved information"))) {
-    throw new Error("unresolvedInformation did not preserve a bounded score and explanation.");
+  if (bundleOptimizerExamples.unresolvedInformation !== null) {
+    throw new Error("unresolvedInformation was incorrectly selected as a recommendation.");
   }
 
   return bundleOptimizerExamples;

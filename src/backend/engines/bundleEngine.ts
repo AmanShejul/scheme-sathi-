@@ -3,6 +3,10 @@ import type { Scheme } from "@/types/scheme-types";
 
 const BUNDLE_REASON = "All schemes in this bundle have no explicit conflict in the current scheme metadata.";
 
+export type BundleSearch = {
+  forEach: (callback: (bundle: Bundle) => void) => void;
+};
+
 function pairKey(schemeAId: string, schemeBId: string): string {
   return [schemeAId, schemeBId].sort().join("\u0000");
 }
@@ -30,25 +34,36 @@ function createBundle(schemeIds: string[]): Bundle {
  * Generates every non-empty, conflict-free combination of the supplied schemes.
  * Eligibility must already have been evaluated by the caller.
  */
-export function generateBundles(schemes: Scheme[], conflicts: ConflictResult[]): Bundle[] {
+export function createBundleSearch(schemes: Scheme[], conflicts: ConflictResult[]): BundleSearch {
   const uniqueSchemes = new Map(schemes.map((scheme) => [scheme.id, scheme]));
   const schemeIds = [...uniqueSchemes.keys()].sort();
-  if (schemeIds.length === 0) return [];
-
   const explicitConflictKeys = conflictKeys(conflicts);
+
+  return {
+    forEach(callback) {
+      function collectCombinations(startIndex: number, selectedIds: string[]) {
+        for (let index = startIndex; index < schemeIds.length; index += 1) {
+          const schemeId = schemeIds[index];
+          if (!isCompatible(schemeId, selectedIds, explicitConflictKeys)) continue;
+
+          const nextSelection = [...selectedIds, schemeId];
+          callback(createBundle(nextSelection));
+          collectCombinations(index + 1, nextSelection);
+        }
+      }
+
+      collectCombinations(0, []);
+    },
+  };
+}
+
+/**
+ * Preserves the original eager API for callers that explicitly need an array.
+ * Production orchestration uses createBundleSearch to avoid materializing the
+ * complete combination space.
+ */
+export function generateBundles(schemes: Scheme[], conflicts: ConflictResult[]): Bundle[] {
   const bundles: Bundle[] = [];
-
-  function collectCombinations(startIndex: number, selectedIds: string[]) {
-    for (let index = startIndex; index < schemeIds.length; index += 1) {
-      const schemeId = schemeIds[index];
-      if (!isCompatible(schemeId, selectedIds, explicitConflictKeys)) continue;
-
-      const nextSelection = [...selectedIds, schemeId];
-      bundles.push(createBundle(nextSelection));
-      collectCombinations(index + 1, nextSelection);
-    }
-  }
-
-  collectCombinations(0, []);
+  createBundleSearch(schemes, conflicts).forEach((bundle) => bundles.push(bundle));
   return bundles;
 }

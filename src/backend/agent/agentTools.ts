@@ -1,5 +1,5 @@
 import { generateApplicationPlan } from "../engines/applicationPlanEngine";
-import { generateBundles as generateBundleCandidates } from "../engines/bundleEngine";
+import { createBundleSearch } from "../engines/bundleEngine";
 import { optimizeBundle as selectBundle } from "../engines/bundleOptimizer";
 import { detectConflicts as findConflicts } from "../engines/conflictEngine";
 import { findMissingDocuments } from "../engines/documentEngine";
@@ -40,7 +40,7 @@ export function createAgentToolRegistry(): AgentToolRegistry {
     generateBundles: {
       name: "generateBundles",
       description: "Generate deterministic conflict-free bundle candidates.",
-      execute: ({ schemes, conflicts }: GenerateBundlesInput) => generateBundleCandidates(schemes, conflicts),
+      execute: ({ schemes, conflicts }: GenerateBundlesInput) => createBundleSearch(schemes, conflicts),
     },
     optimizeBundle: {
       name: "optimizeBundle",

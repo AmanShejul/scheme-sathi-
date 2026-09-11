@@ -1,6 +1,7 @@
 import type { CitizenProfile } from "@/types/citizen-profile";
 import type { Bundle, EligibilityResult } from "@/types/analysis-types";
 
+import type { BundleSearch } from "./bundleEngine";
 import type { MissingInformationResult } from "./missingInformationEngine";
 
 const MAX_MATCHED_RULES_FOR_SCORE = 5;
@@ -122,12 +123,10 @@ function isBetterCandidate(
 function recommendationReasons(
   selected: Bundle,
   selectedMetrics: BundleMetrics,
-  candidates: Bundle[],
-  metricsByBundle: Map<Bundle, BundleMetrics>,
+  maximumStrongMatches: number,
+  minimumMissingInformation: number,
 ): string[] {
   const reasons = ["Highest-scoring candidate based on the current rules."];
-  const maximumStrongMatches = Math.max(...candidates.map((candidate) => metricsByBundle.get(candidate)?.strongMatches ?? 0));
-  const minimumMissingInformation = Math.min(...candidates.map((candidate) => metricsByBundle.get(candidate)?.missingInformationCount ?? 0));
 
   if (selectedMetrics.strongMatches === maximumStrongMatches && selectedMetrics.strongMatches > 0) {
     reasons.push("The selected schemes have the strongest profile matches among the candidates.");
@@ -152,36 +151,52 @@ function recommendationReasons(
  */
 export function optimizeBundle(
   profile: CitizenProfile,
-  candidates: Bundle[],
+  candidates: Bundle[] | BundleSearch,
   eligibilityResults: EligibilityResult[],
   missingInformation: MissingInformationResult[],
 ): Bundle | null {
-  if (candidates.length === 0) return null;
-
   const eligibilityByScheme = new Map(eligibilityResults.map((result) => [result.schemeId, result]));
   const missingByScheme = new Map(missingInformation.map((result) => [result.schemeId, result]));
-  const metricsByBundle = new Map<Bundle, BundleMetrics>();
+  let selected: Bundle | null = null;
+  let selectedMetrics: BundleMetrics | null = null;
+  let maximumStrongMatches = 0;
+  let minimumMissingInformation = Number.POSITIVE_INFINITY;
 
-  candidates.forEach((candidate) => {
-    metricsByBundle.set(candidate, evaluateBundle(profile, candidate, eligibilityByScheme, missingByScheme));
-  });
+  const visit = (candidate: Bundle) => {
+    if (
+      candidate.schemeIds.length === 0 ||
+      !candidate.schemeIds.every((schemeId) => eligibilityByScheme.get(schemeId)?.status === "potentially_eligible")
+    ) {
+      return;
+    }
 
-  let selected = candidates[0];
-  let selectedMetrics = metricsByBundle.get(selected) ?? { score: 0, strongMatches: 0, missingInformationCount: 0 };
+    const candidateMetrics = evaluateBundle(profile, candidate, eligibilityByScheme, missingByScheme);
+    maximumStrongMatches = Math.max(maximumStrongMatches, candidateMetrics.strongMatches);
+    minimumMissingInformation = Math.min(minimumMissingInformation, candidateMetrics.missingInformationCount);
 
-  candidates.slice(1).forEach((candidate) => {
-    const candidateMetrics = metricsByBundle.get(candidate) ?? { score: 0, strongMatches: 0, missingInformationCount: 0 };
-    if (isBetterCandidate(candidate, candidateMetrics, selected, selectedMetrics)) {
+    if (!selected || !selectedMetrics || isBetterCandidate(candidate, candidateMetrics, selected, selectedMetrics)) {
       selected = candidate;
       selectedMetrics = candidateMetrics;
     }
-  });
+  };
+
+  if (Array.isArray(candidates)) {
+    candidates.forEach(visit);
+  } else {
+    candidates.forEach(visit);
+  }
+
+  const selectedBundle = selected;
+  const selectedBundleMetrics = selectedMetrics;
+  if (selectedBundle === null || selectedBundleMetrics === null) return null;
+  const resolvedSelectedBundle = selectedBundle as Bundle;
+  const resolvedSelectedMetrics = selectedBundleMetrics as BundleMetrics;
 
   return {
-    ...selected,
+    ...resolvedSelectedBundle,
     name: "Recommended bundle",
-    score: selectedMetrics.score,
-    reasons: recommendationReasons(selected, selectedMetrics, candidates, metricsByBundle),
-    excludedSchemes: [...selected.excludedSchemes],
+    score: resolvedSelectedMetrics.score,
+    reasons: recommendationReasons(resolvedSelectedBundle, resolvedSelectedMetrics, maximumStrongMatches, minimumMissingInformation),
+    excludedSchemes: [...resolvedSelectedBundle.excludedSchemes],
   };
 }
