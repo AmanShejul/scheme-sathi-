@@ -1,5 +1,5 @@
-import { CitizenProfileForm } from "@/components/profile/citizen-profile-form";
-import { SiteHeader } from "@/components/layout/site-header";
+import { SiteHeader } from "@/components/site-header";
+import { CitizenProfileForm } from "@/components/citizen-profile-form";
 
 export default function FindBenefitsPage() {
   return (
