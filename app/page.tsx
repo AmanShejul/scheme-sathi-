@@ -29,64 +29,216 @@ const features = [
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
 
       <main>
-        <section className="border-b border-border bg-[#fffaf6]">
-          <div className="mx-auto flex w-full max-w-6xl flex-col items-start px-6 py-20 sm:px-10 sm:py-24 lg:px-12 lg:py-28">
-            <p className="text-base font-bold text-primary">Government benefits, simplified.</p>
-            <h1 className="mt-5 max-w-3xl text-4xl font-bold leading-tight text-foreground sm:text-5xl lg:text-6xl">
-              Find the government benefits you may be eligible for.
-            </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground sm:text-xl">
-              Scheme Sathi helps you find relevant schemes and understand what to do next.
+        {/* Hero */}
+        <section className="relative overflow-hidden border-b border-border bg-[#fffaf6]">
+          <div
+            aria-hidden="true"
+            className="absolute left-0 top-0 h-full w-2 bg-primary"
+          />
+
+          <div className="mx-auto grid w-full max-w-6xl gap-12 px-6 py-16 sm:px-10 sm:py-20 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:px-12 lg:py-24">
+            <div>
+              <div className="flex items-center gap-3">
+                <span className="h-px w-12 bg-primary" />
+
+                <p className="text-sm font-bold uppercase tracking-[0.2em] text-primary">
+                  Government benefits, simplified
+                </p>
+              </div>
+
+              <h1 className="mt-7 max-w-3xl text-5xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-6xl lg:text-7xl">
+                Find benefits
+                <span className="block text-primary">
+                  made for you.
+                </span>
+              </h1>
+
+              <p className="mt-7 max-w-2xl text-lg leading-8 text-muted-foreground sm:text-xl">
+                Scheme Sathi helps you find relevant schemes and understand
+                what to do next.
+              </p>
+
+              <Button asChild size="lg" className="mt-10">
+                <Link href="/find-benefits">Check My Benefits</Link>
+              </Button>
+            </div>
+
+            {/* Hero Information Card */}
+            <div className="relative">
+              <div className="border border-border bg-card p-6 shadow-sm sm:p-8">
+                <p className="text-sm font-bold uppercase tracking-wider text-primary">
+                  Your journey
+                </p>
+
+                <div className="mt-6 space-y-5">
+                  {steps.slice(0, 3).map(({ number, label, icon: Icon }) => (
+                    <div
+                      key={number}
+                      className="flex items-center gap-4"
+                    >
+                      <div className="flex size-11 shrink-0 items-center justify-center border border-border bg-muted">
+                        <Icon
+                          className="size-5 text-primary"
+                          aria-hidden="true"
+                        />
+                      </div>
+
+                      <div>
+                        <p className="text-xs font-bold text-primary">
+                          STEP {number}
+                        </p>
+
+                        <p className="mt-1 font-bold text-foreground">
+                          {label}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-7 border-t border-border pt-5">
+                  <p className="text-sm leading-6 text-muted-foreground">
+                    A simple guided process to help you understand your
+                    available government benefits.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* How It Works */}
+        <section className="mx-auto w-full max-w-6xl px-6 py-16 sm:px-10 lg:px-12 lg:py-24">
+          <div className="max-w-2xl">
+            <p className="text-sm font-bold uppercase tracking-[0.18em] text-primary">
+              Simple process
             </p>
-            <Button asChild size="lg" className="mt-9">
-              <Link href="/find-benefits">Check My Benefits</Link>
-            </Button>
-          </div>
-        </section>
 
-        <section className="mx-auto w-full max-w-6xl px-6 py-16 sm:px-10 lg:px-12 lg:py-20">
-          <div className="border-t border-border pt-7">
-            <h2 className="text-2xl font-bold text-foreground">How it works</h2>
-            <div className="mt-8 grid gap-7 sm:grid-cols-2 lg:grid-cols-5">
-              {steps.map(({ number, label, icon: Icon }) => (
-                <div key={number} className="flex items-start gap-3">
-                  <Icon className="mt-1 size-5 shrink-0 text-primary" aria-hidden="true" />
-                  <div>
-                    <p className="text-sm font-bold text-primary">{number}</p>
-                    <p className="mt-1 font-bold text-foreground">{label}</p>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              How Scheme Sathi works
+            </h2>
+
+            <p className="mt-4 text-lg leading-8 text-muted-foreground">
+              Follow a clear step-by-step journey to discover the benefits
+              that may be relevant to you.
+            </p>
+          </div>
+
+          {/* Timeline */}
+          <div className="mt-12">
+            <div className="grid gap-0 border border-border lg:grid-cols-5">
+              {steps.map(({ number, label, icon: Icon }, index) => (
+                <div
+                  key={number}
+                  className={`relative min-h-52 border-b border-border p-6 last:border-b-0 lg:border-b-0 lg:border-r lg:last:border-r-0 ${
+                    index % 2 === 0 ? "bg-card" : "bg-muted/40"
+                  }`}
+                >
+                  <p className="text-4xl font-bold tracking-tight text-primary/20">
+                    {number}
+                  </p>
+
+                  <div className="mt-8 flex size-12 items-center justify-center border border-border bg-background">
+                    <Icon
+                      className="size-5 text-primary"
+                      aria-hidden="true"
+                    />
                   </div>
+
+                  <p className="mt-5 font-bold text-foreground">
+                    {label}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
+        {/* Features */}
         <section className="border-y border-border bg-muted/40">
-          <div className="mx-auto w-full max-w-6xl px-6 py-16 sm:px-10 lg:px-12 lg:py-20">
-            <h2 className="text-2xl font-bold text-foreground">Key features</h2>
-            <div className="mt-8 grid gap-0 border-y border-border sm:grid-cols-2 lg:grid-cols-4">
-              {features.map(({ title, icon: Icon }) => (
-                <div key={title} className="flex items-center gap-3 border-b border-border py-5 last:border-b-0 sm:px-5 sm:even:border-l lg:border-b-0 lg:border-r lg:first:pl-0 lg:last:border-r-0">
-                  <Icon className="size-5 shrink-0 text-primary" aria-hidden="true" />
-                  <p className="font-bold text-foreground">{title}</p>
-                </div>
+          <div className="mx-auto w-full max-w-6xl px-6 py-16 sm:px-10 lg:px-12 lg:py-24">
+            <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
+              <div className="max-w-2xl">
+                <p className="text-sm font-bold uppercase tracking-[0.18em] text-primary">
+                  What you get
+                </p>
+
+                <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                  Everything you need to get started
+                </h2>
+              </div>
+
+              <p className="max-w-sm text-sm leading-6 text-muted-foreground">
+                Clear guidance designed to make government benefits easier to
+                understand.
+              </p>
+            </div>
+
+            <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {features.map(({ title, icon: Icon }, index) => (
+                <article
+                  key={title}
+                  className="group border border-border bg-card p-6 transition-transform duration-200 hover:-translate-y-1"
+                >
+                  <div className="flex items-start justify-between">
+                    <span className="text-sm font-bold text-primary">
+                      0{index + 1}
+                    </span>
+
+                    <div className="flex size-11 items-center justify-center bg-muted">
+                      <Icon
+                        className="size-5 text-primary"
+                        aria-hidden="true"
+                      />
+                    </div>
+                  </div>
+
+                  <h3 className="mt-10 text-lg font-bold leading-snug text-foreground">
+                    {title}
+                  </h3>
+                </article>
               ))}
             </div>
-            <Button asChild size="lg" className="mt-10">
+
+            <div className="mt-12 border-t border-border pt-10">
+              <Button asChild size="lg">
+                <Link href="/find-benefits">Check My Benefits</Link>
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA */}
+        <section className="mx-auto w-full max-w-6xl px-6 py-16 sm:px-10 lg:px-12 lg:py-24">
+          <div className="border border-border bg-card p-8 sm:p-12 lg:flex lg:items-center lg:justify-between lg:gap-12">
+            <div className="max-w-2xl">
+              <p className="text-sm font-bold uppercase tracking-[0.18em] text-primary">
+                Get started
+              </p>
+
+              <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                Discover the benefits that may be available to you.
+              </h2>
+            </div>
+
+            <Button asChild size="lg" className="mt-8 lg:mt-0">
               <Link href="/find-benefits">Check My Benefits</Link>
             </Button>
           </div>
         </section>
       </main>
 
-      <footer className="border-t border-border bg-background">
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-1 px-6 py-8 sm:px-10 lg:px-12">
-          <p className="font-bold text-foreground">Scheme Sathi</p>
-          <p className="text-sm text-muted-foreground">Smarter access to government benefits.</p>
+      <footer className="border-t border-border bg-foreground text-background">
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-6 py-10 sm:px-10 lg:flex-row lg:items-center lg:justify-between lg:px-12">
+          <p className="text-lg font-bold">Scheme Sathi</p>
+
+          <p className="text-sm opacity-70">
+            Smarter access to government benefits.
+          </p>
         </div>
       </footer>
     </div>
