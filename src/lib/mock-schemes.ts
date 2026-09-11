@@ -17,7 +17,7 @@ export const mockSchemes: Scheme[] = rawSchemeSeed.schemes.map((scheme) => ({
   documents: scheme.documents,
   conflictsWith: scheme.conflicts,
   conflicts: scheme.conflicts,
-  application: { mode: "not-configured-in-seed", portalUrl: scheme.source_url, steps: [] },
-  developmentOnly: true,
+  application: { mode: "source-only", portalUrl: null, steps: [] },
+  developmentOnly: false,
 }));
 export const primaryMockScheme = mockSchemes[0];

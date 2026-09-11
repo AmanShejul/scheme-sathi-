@@ -16,7 +16,7 @@ function usableUrl(value: string | null | undefined): string | null {
 }
 
 function officialUrl(scheme: Scheme): string | null {
-  return usableUrl(scheme.application.portalUrl) ?? usableUrl(scheme.source.url) ?? usableUrl(scheme.source_url);
+  return usableUrl(scheme.application.portalUrl);
 }
 
 function selectedSchemesFromBundle(bundle: Bundle | null, schemes: Scheme[]): Scheme[] {

@@ -14,6 +14,7 @@ export type RawSchemeSeed = {
   source_url: string;
   data_status: string;
   verification_note: string;
+  application_url?: string | null;
 };
 
 export type RawSchemeSeedFile = {
@@ -45,11 +46,11 @@ export function mapSchemeSeed(rawScheme: RawSchemeSeed): Scheme {
     conflictsWith: rawScheme.conflicts,
     conflicts: rawScheme.conflicts,
     application: {
-      mode: "not-configured-in-seed",
-      portalUrl: rawScheme.source_url,
+      mode: rawScheme.application_url ? "online" : "source-only",
+      portalUrl: rawScheme.application_url ?? null,
       steps: [],
     },
-    developmentOnly: true,
+    developmentOnly: false,
   };
 }
 

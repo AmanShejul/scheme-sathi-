@@ -24,8 +24,8 @@ export const schemeRepositoryInitialization: SchemeRepositoryInitialization = {
   recordCount: schemes.length,
   hasExpectedRecordCount: schemes.length === 50,
   allIdsUnique: new Set(schemes.map((scheme) => scheme.id)).size === schemes.length,
-  hasFirstExpectedId: schemes.some((scheme) => scheme.id === "SCH001"),
-  hasLastExpectedId: schemes.some((scheme) => scheme.id === "SCH050"),
+  hasFirstExpectedId: schemes.some((scheme) => scheme.id === "MH001"),
+  hasLastExpectedId: schemes.some((scheme) => scheme.id === "IN050"),
   validation: schemeValidation,
 };
 

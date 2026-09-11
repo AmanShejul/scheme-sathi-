@@ -81,6 +81,11 @@ const mappings: Record<string, InformationMapping> = {
     label: "Rural or urban residence",
     getValue: () => "",
   },
+  residence_type: {
+    field: "residenceType",
+    label: "Rural or urban residence",
+    getValue: () => "",
+  },
 };
 
 function humanizeRule(rule: string) {
