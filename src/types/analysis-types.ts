@@ -1,5 +1,12 @@
 import type { CitizenProfile } from "./citizen-profile";
 
+export type AnalysisExplanation = {
+  summary: string;
+  whyRecommended: string[];
+  missingInformationExplanation: string[];
+  nextSteps: string[];
+};
+
 export type EligibilityStatus =
   | "potentially_eligible"
   | "not_eligible"
@@ -62,6 +69,7 @@ export type AnalyzeResponse = {
   recommendedBundle: Bundle | null;
   missingDocuments: MissingDocument[];
   applicationPlan: ApplicationStep[];
+  aiExplanation?: AnalysisExplanation | null;
 };
 
 export type AnalysisResult = AnalyzeResponse;

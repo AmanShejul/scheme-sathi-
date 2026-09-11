@@ -26,7 +26,7 @@ export async function runGeminiServiceExamples() {
   if (JSON.stringify(analysisResult) !== before) throw new Error("Gemini service mutated deterministic analysis results.");
 
   const malformed = await generateAnalysisExplanation(analysisResult, profile, { apiKey: "test-key", generateText: async () => "not-json" });
-  if (!malformed || !malformed.summary.includes("AI explanation is unavailable")) throw new Error("Malformed output did not receive a safe fallback.");
+  if (malformed !== null) throw new Error("Malformed output was not rejected safely.");
 
   const missingKey = await generateAnalysisExplanation(analysisResult, profile, { apiKey: "" });
   if (missingKey !== null) throw new Error("Missing GEMINI_API_KEY did not return null.");

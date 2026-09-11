@@ -36,7 +36,7 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   try {
-    const result: AnalysisResult = analyze(payload.citizenProfile, payload.availableDocuments);
+    const result: AnalysisResult = await analyze(payload.citizenProfile, payload.availableDocuments);
     return Response.json(result, { status: 200 });
   } catch (error) {
     if (error instanceof AnalysisServiceError && error.code === "invalid_profile") {

@@ -1,14 +1,9 @@
 import { GoogleGenAI } from "@google/genai";
 
-import type { AnalysisResult } from "@/types/analysis-types";
+import type { AnalysisExplanation, AnalysisResult } from "@/types/analysis-types";
 import type { CitizenProfile } from "@/types/citizen-profile";
 
-export type AnalysisExplanation = {
-  summary: string;
-  whyRecommended: string[];
-  missingInformationExplanation: string[];
-  nextSteps: string[];
-};
+export type { AnalysisExplanation } from "@/types/analysis-types";
 
 export type GeminiServiceOptions = {
   apiKey?: string;
@@ -71,22 +66,6 @@ export function buildGeminiPrompt(analysisResult: AnalysisResult, profile: Citiz
   ].join("\n");
 }
 
-function fallbackExplanation(analysisResult: AnalysisResult): AnalysisExplanation {
-  const missingInformationExplanation = analysisResult.missingDocuments
-    .filter((document) => document.status === "missing")
-    .map((document) => `${document.document} is marked missing for the selected scheme(s).`);
-  const nextSteps = analysisResult.applicationPlan.map((step) => step.action);
-
-  return {
-    summary: "AI explanation is unavailable. The deterministic analysis remains available as the source of truth.",
-    whyRecommended: analysisResult.recommendedBundle
-      ? ["A recommended bundle was selected by the deterministic analysis rules."]
-      : ["No recommended bundle was selected by the deterministic analysis rules."],
-    missingInformationExplanation,
-    nextSteps,
-  };
-}
-
 function isStringArray(value: unknown): value is string[] {
   return Array.isArray(value) && value.every((item) => typeof item === "string");
 }
@@ -103,12 +82,12 @@ function isAnalysisExplanation(value: unknown): value is AnalysisExplanation {
   );
 }
 
-function parseExplanation(text: string, fallback: AnalysisExplanation): AnalysisExplanation {
+function parseExplanation(text: string): AnalysisExplanation | null {
   try {
     const parsed: unknown = JSON.parse(text);
-    return isAnalysisExplanation(parsed) ? parsed : fallback;
+    return isAnalysisExplanation(parsed) ? parsed : null;
   } catch {
-    return fallback;
+    return null;
   }
 }
 
@@ -131,8 +110,7 @@ async function generateWithSdk(prompt: string, apiKey: string, model: string): P
 
 /**
  * Generates an explanation downstream of deterministic analysis.
- * Returns null when Gemini is unavailable; malformed model output receives a
- * safe typed fallback so the deterministic result can still be used.
+ * Returns null when Gemini is unavailable or its structured output is invalid.
  */
 export async function generateAnalysisExplanation(
   analysisResult: AnalysisResult,
@@ -142,14 +120,13 @@ export async function generateAnalysisExplanation(
   const apiKey = options.apiKey ?? process.env.GEMINI_API_KEY;
   if (!apiKey && !options.generateText) return null;
 
-  const fallback = fallbackExplanation(analysisResult);
   const prompt = buildGeminiPrompt(analysisResult, citizenProfile);
 
   try {
     const responseText = options.generateText
       ? await options.generateText(prompt)
       : await generateWithSdk(prompt, apiKey as string, options.model ?? process.env.GEMINI_MODEL ?? "gemini-2.5-flash");
-    return parseExplanation(responseText, fallback);
+    return parseExplanation(responseText);
   } catch {
     return null;
   }

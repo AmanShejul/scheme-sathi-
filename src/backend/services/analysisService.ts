@@ -1,7 +1,8 @@
-import type { AnalysisResult } from "@/types/analysis-types";
+import type { AnalysisExplanation, AnalysisResult } from "@/types/analysis-types";
 import type { CitizenProfile } from "@/types/citizen-profile";
 
 import { getAllSchemes, schemeValidation } from "../data/schemeRepository";
+import { generateAnalysisExplanation } from "./geminiService";
 import { runAgent } from "./agentService";
 
 export type AnalysisServiceErrorCode = "invalid_profile" | "repository_failure" | "validation_failure" | "engine_failure";
@@ -55,7 +56,7 @@ function formatError(error: unknown): string {
 }
 
 /** Runs the complete Scheme Sathi analysis through the controlled agent orchestrator. */
-export function analyze(profile: CitizenProfile, availableDocuments: string[]): AnalysisResult {
+export async function analyze(profile: CitizenProfile, availableDocuments: string[]): Promise<AnalysisResult> {
   validateInputs(profile, availableDocuments);
 
   let schemes: ReturnType<typeof getAllSchemes>;
@@ -71,7 +72,14 @@ export function analyze(profile: CitizenProfile, availableDocuments: string[]): 
   }
 
   try {
-    return runAgent({ citizenProfile: profile, availableDocuments, schemes }).analysisResult;
+    const deterministicResult = runAgent({ citizenProfile: profile, availableDocuments, schemes }).analysisResult;
+    let aiExplanation: AnalysisExplanation | null = null;
+    try {
+      aiExplanation = await generateAnalysisExplanation(deterministicResult, profile);
+    } catch {
+      aiExplanation = null;
+    }
+    return { ...deterministicResult, aiExplanation };
   } catch (error) {
     if (error instanceof AnalysisServiceError) throw error;
     throw new AnalysisServiceError("engine_failure", `Analysis engine failure: ${formatError(error)}`);

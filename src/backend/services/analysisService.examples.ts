@@ -33,9 +33,10 @@ export const analysisServiceExamples = {
   noAvailableDocuments: analyze(studentOBCProfile, []),
 };
 
-export function runAnalysisServiceExamples() {
-  const entries = Object.entries(analysisServiceExamples);
-  entries.forEach(([name, result]) => {
+export async function runAnalysisServiceExamples() {
+  const entries = Object.entries(analysisServiceExamples).map(async ([name, resultPromise]) => [name, await resultPromise] as const);
+  const resolvedEntries = await Promise.all(entries);
+  resolvedEntries.forEach(([name, result]) => {
     if (result.eligibilityResults.length === 0) throw new Error(`${name} did not populate eligibility results.`);
     if (!result.recommendedBundle && (result.missingDocuments.length !== 0 || result.applicationPlan.length !== 0)) {
       throw new Error(`${name} produced downstream output without a recommended bundle.`);
@@ -53,10 +54,11 @@ export function runAnalysisServiceExamples() {
     }
   });
 
-  const incompleteMissing = analysisServiceExamples.incomplete.eligibilityResults.filter((result) => result.status === "insufficient_data");
+  const incomplete = await analysisServiceExamples.incomplete;
+  const incompleteMissing = incomplete.eligibilityResults.filter((result) => result.status === "insufficient_data");
   if (incompleteMissing.length === 0) throw new Error("incomplete did not produce insufficient_data results.");
 
-  const noPotentialResult = analysisServiceExamples.noPotentiallyEligibleSchemes;
+  const noPotentialResult = await analysisServiceExamples.noPotentiallyEligibleSchemes;
   const potentialCount = noPotentialResult.eligibilityResults.filter((result) => result.status === "potentially_eligible").length;
   if (potentialCount === 0) {
     if (noPotentialResult.recommendedBundle !== null || noPotentialResult.applicationPlan.length !== 0) {

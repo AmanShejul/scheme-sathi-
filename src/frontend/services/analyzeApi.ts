@@ -1,8 +1,22 @@
-import type { AnalyzeResponse } from "@/types/analysis-types";
+import type { AnalysisExplanation, AnalyzeResponse } from "@/types/analysis-types";
 import type { CitizenProfile } from "@/types/citizen-profile";
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((item) => typeof item === "string");
+}
+
+function isAnalysisExplanation(value: unknown): value is AnalysisExplanation {
+  if (!isObject(value)) return false;
+  return (
+    typeof value.summary === "string" &&
+    isStringArray(value.whyRecommended) &&
+    isStringArray(value.missingInformationExplanation) &&
+    isStringArray(value.nextSteps)
+  );
 }
 
 function isAnalysisResponse(value: unknown): value is AnalyzeResponse {
@@ -12,7 +26,8 @@ function isAnalysisResponse(value: unknown): value is AnalyzeResponse {
     Array.isArray(value.conflicts) &&
     (value.recommendedBundle === null || isObject(value.recommendedBundle)) &&
     Array.isArray(value.missingDocuments) &&
-    Array.isArray(value.applicationPlan)
+    Array.isArray(value.applicationPlan) &&
+    (value.aiExplanation === undefined || value.aiExplanation === null || isAnalysisExplanation(value.aiExplanation))
   );
 }
 
