@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Landmark } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+
 export function SiteHeader() {
   return (
     <header className="border-b border-border bg-background">
@@ -15,13 +17,16 @@ export function SiteHeader() {
           </span>
         </Link>
         <nav aria-label="Main navigation" className="hidden items-center gap-7 text-sm font-bold text-muted-foreground sm:flex">
-          <Link className="transition-colors hover:text-foreground" href="#about">
-            About
+          <Link className="text-foreground transition-colors hover:text-primary" href="/">
+            Home
           </Link>
-          <Link className="transition-colors hover:text-foreground" href="#help">
-            Help
+          <Link className="transition-colors hover:text-foreground" href="/find-benefits">
+            Find Benefits
           </Link>
         </nav>
+        <Button asChild size="sm" className="shrink-0 sm:h-10 sm:px-4">
+          <Link href="/find-benefits">Check My Benefits</Link>
+        </Button>
       </div>
     </header>
   );
