@@ -9,7 +9,7 @@ import {
   UserRound,
 } from "lucide-react";
 
-import { SiteHeader } from "@/components/site-header";
+import { SiteHeader } from "@/components/layout/site-header";
 import { Button } from "@/components/ui/button";
 
 const steps = [

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { type CitizenProfile, initialCitizenProfile, type DocumentStatus } from "@/lib/citizen-profile";
+import { type CitizenProfile, initialCitizenProfile, type DocumentStatus } from "@/types/citizen-profile";
 
 const steps = ["About You", "Eligibility", "Documents", "Review"];
 
