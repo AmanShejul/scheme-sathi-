@@ -1,6 +1,8 @@
 import type { CitizenProfile } from "@/types/citizen-profile";
 import type { Scheme } from "@/types/scheme-types";
 
+import { normalizeEligibilityRule } from "./eligibilityRuleNormalizer";
+
 export type EligibilityStatus =
   | "potentially_eligible"
   | "not_eligible"
@@ -52,10 +54,10 @@ function parseIncome(value: string) {
 }
 
 function profileValueForRule(profile: CitizenProfile, rule: string) {
-  if (["state", "states"].includes(rule)) return profile.state;
-  if (["occupation", "occupations"].includes(rule)) return profile.occupation;
-  if (["gender"].includes(rule)) return profile.gender;
-  if (["category", "categories", "social_category", "or_social_category"].includes(rule)) return profile.category;
+  if (rule === "state") return profile.state;
+  if (rule === "occupation") return profile.occupation;
+  if (rule === "gender") return profile.gender;
+  if (rule === "social_category") return profile.category;
   if (rule === "student") return parseBoolean(profile.studentStatus);
   if (rule === "disability") return parseBoolean(profile.disabilityStatus);
   return null;
@@ -95,11 +97,11 @@ function evaluateAgeRule(profile: CitizenProfile, rule: string, configured: unkn
   if (!profile.age.trim() || !Number.isFinite(age)) {
     return { rule, status: "unknown", reason: "Age information is required but was not provided." };
   }
-  const passes = rule === "min_age" || rule === "minAge" ? age >= configured : age <= configured;
+  const passes = rule === "min_age" ? age >= configured : age <= configured;
   if (passes) {
-    return { rule, status: "matched", reason: `Citizen is ${age} years old and meets the ${rule === "max_age" || rule === "maxAge" ? "maximum" : "minimum"} age requirement.` };
+    return { rule, status: "matched", reason: `Citizen is ${age} years old and meets the ${rule === "max_age" ? "maximum" : "minimum"} age requirement.` };
   }
-  return { rule, status: "failed", reason: `Citizen is ${age} years old and does not meet the ${rule === "max_age" || rule === "maxAge" ? "maximum" : "minimum"} age requirement of ${configured}.` };
+  return { rule, status: "failed", reason: `Citizen is ${age} years old and does not meet the ${rule === "max_age" ? "maximum" : "minimum"} age requirement of ${configured}.` };
 }
 
 function evaluateIncomeRule(profile: CitizenProfile, rule: string, configured: unknown): Evaluation {
@@ -113,15 +115,16 @@ function evaluateIncomeRule(profile: CitizenProfile, rule: string, configured: u
 }
 
 function evaluateRule(profile: CitizenProfile, rule: string, configured: unknown): Evaluation {
+  const canonicalRule = normalizeEligibilityRule(rule);
   if (configured === null || configured === undefined || (Array.isArray(configured) && configured.length === 0)) {
-    return { rule, status: "matched", reason: "Rule has no active configured condition." };
+    return { rule: canonicalRule, status: "matched", reason: "Rule has no active configured condition." };
   }
-  if (rule === "min_age" || rule === "max_age" || rule === "minAge" || rule === "maxAge") return evaluateAgeRule(profile, rule, configured);
-  if (["annual_income_max", "maxIncome", "income_limit"].includes(rule)) return evaluateIncomeRule(profile, rule, configured);
-  if (["state", "states", "occupation", "occupations", "gender", "category", "categories", "social_category", "or_social_category"].includes(rule)) return evaluateListRule(profile, rule, configured);
-  if (rule === "student" || rule === "disability") return evaluateBooleanRule(profile, rule, configured);
-  if (configured === false) return { rule, status: "matched", reason: "No positive condition is configured for this rule." };
-  return { rule, status: "unknown", reason: `${rule.replaceAll("_", " ")} information is required but is not supported by the current citizen profile.` };
+  if (canonicalRule === "min_age" || canonicalRule === "max_age") return evaluateAgeRule(profile, canonicalRule, configured);
+  if (canonicalRule === "annual_income_max") return evaluateIncomeRule(profile, canonicalRule, configured);
+  if (["state", "occupation", "gender", "social_category"].includes(canonicalRule)) return evaluateListRule(profile, canonicalRule, configured);
+  if (canonicalRule === "student" || canonicalRule === "disability") return evaluateBooleanRule(profile, canonicalRule, configured);
+  if (configured === false) return { rule: canonicalRule, status: "matched", reason: "No positive condition is configured for this rule." };
+  return { rule: canonicalRule, status: "unknown", reason: `${canonicalRule.replaceAll("_", " ")} information is required but is not supported by the current citizen profile.` };
 }
 
 export function evaluateEligibility(profile: CitizenProfile, scheme: Scheme): EligibilityResult {

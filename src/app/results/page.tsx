@@ -118,7 +118,7 @@ export default function ResultsPage() {
             {otherResults.length > 0 ? otherResults.map((result) => (
               <div key={result.schemeId} className="border-b border-border py-3 last:border-b-0 first:pt-0 last:pb-0">
                 <p className="font-bold text-muted-foreground">{resolveSchemeName(schemes, result.schemeId)}</p>
-                <p className="mt-2 text-sm text-muted-foreground">{result.status === "insufficient_data" ? "Insufficient information" : "Not eligible"}: {result.reasons.join(" ") || "No additional explanation was returned."}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{result.status === "insufficient_data" ? "Insufficient information" : "Does not match the recorded conditions"}: {result.reasons.join(" ") || "No additional explanation was returned."}</p>
               </div>
             )) : <p className="text-sm text-muted-foreground">No other eligibility outcomes were recorded.</p>}
           </div>

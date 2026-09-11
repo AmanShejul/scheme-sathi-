@@ -218,7 +218,7 @@ scheme-sathi/
 │   ├── gemini.ts
 │   └── types.ts
 ├── data/
-│   └── schemes.json
+│   └── schemes.seed.json
 ├── public/
 ├── .env.local
 └── README.md

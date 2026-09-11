@@ -32,19 +32,19 @@ export type SchemeSource = {
 export type Scheme = {
   id: string;
   name: string;
+  /** Government/program level. This is distinct from geographic applicability in state. */
   level?: string;
+  /** Geographic applicability or jurisdiction represented by the dataset, not the program level. */
   state?: string;
   category: string;
   target_groups?: string[];
   source: SchemeSource;
-  source_url?: string;
   data_status?: string;
   verification_note?: string;
   eligibility: SchemeEligibility;
   benefit: SchemeBenefit;
   documents: string[];
   conflictsWith: string[];
-  conflicts?: string[];
   application: SchemeApplication;
   developmentOnly: boolean;
 };

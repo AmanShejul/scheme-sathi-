@@ -15,12 +15,11 @@ const baseScheme: Scheme = {
   application: { mode: "placeholder", portalUrl: null, steps: [] },
 };
 
-const scheme = (id: string, conflictsWith?: string[], conflicts?: string[]): Scheme => ({
+const scheme = (id: string, conflictsWith: string[] = []): Scheme => ({
   ...baseScheme,
   id,
   name: id,
-  conflictsWith: conflictsWith ?? [],
-  ...(conflicts === undefined ? {} : { conflicts }),
+  conflictsWith,
 });
 
 const pairIds = (items: ReturnType<typeof detectConflicts>) =>
@@ -42,10 +41,7 @@ export const conflictEngineExamples = {
   ]),
   selfConflictIgnored: detectConflicts([scheme("scheme-a", ["scheme-a"])]),
   emptyConflicts: detectConflicts([scheme("scheme-a", []), scheme("scheme-b", [])]),
-  missingConflictMetadata: detectConflicts([
-    scheme("scheme-a", undefined, ["scheme-b"]),
-    scheme("scheme-b"),
-  ]),
+  missingConflictMetadata: detectConflicts([scheme("scheme-a"), scheme("scheme-b")]),
   noConflictData: detectConflicts([scheme("scheme-a"), scheme("scheme-b")]),
 };
 
@@ -56,7 +52,7 @@ export function runConflictEngineExamples() {
     ["multipleConflicts", ["scheme-a+scheme-b", "scheme-a+scheme-c"]],
     ["selfConflictIgnored", []],
     ["emptyConflicts", []],
-    ["missingConflictMetadata", ["scheme-a+scheme-b"]],
+    ["missingConflictMetadata", []],
     ["noConflictData", []],
   ];
 

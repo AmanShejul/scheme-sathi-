@@ -108,7 +108,7 @@ scheme-sathi/
 │   └── types.ts
 │
 ├── data/
-│   └── schemes.json
+│   └── schemes.seed.json
 │
 ├── public/
 │

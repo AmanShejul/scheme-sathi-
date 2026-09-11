@@ -11,6 +11,7 @@ export type RawSchemeSeed = {
   benefit: SchemeBenefit;
   documents: string[];
   conflicts: string[];
+  conflictsWith?: string[];
   source_url: string;
   data_status: string;
   verification_note: string;
@@ -25,6 +26,7 @@ export type RawSchemeSeedFile = {
 };
 
 export function mapSchemeSeed(rawScheme: RawSchemeSeed): Scheme {
+  const conflictReferences = rawScheme.conflicts ?? rawScheme.conflictsWith ?? [];
   return {
     id: rawScheme.id,
     name: rawScheme.name,
@@ -37,14 +39,12 @@ export function mapSchemeSeed(rawScheme: RawSchemeSeed): Scheme {
       url: rawScheme.source_url,
       lastVerified: null,
     },
-    source_url: rawScheme.source_url,
     data_status: rawScheme.data_status,
     verification_note: rawScheme.verification_note,
     eligibility: rawScheme.eligibility as SchemeEligibility,
     benefit: rawScheme.benefit,
     documents: rawScheme.documents,
-    conflictsWith: rawScheme.conflicts,
-    conflicts: rawScheme.conflicts,
+    conflictsWith: conflictReferences,
     application: {
       mode: rawScheme.application_url ? "online" : "source-only",
       portalUrl: rawScheme.application_url ?? null,

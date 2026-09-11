@@ -47,7 +47,7 @@ export default function SchemeDetailsPage() {
         <dl className="mt-10 divide-y divide-border border-y border-border">
           <div className="grid gap-2 py-4 sm:grid-cols-[12rem_1fr]"><dt className="font-bold text-muted-foreground">Category</dt><dd className="text-foreground">{scheme.category}</dd></div>
           <div className="grid gap-2 py-4 sm:grid-cols-[12rem_1fr]"><dt className="font-bold text-muted-foreground">Benefit type</dt><dd className="text-foreground">{scheme.benefit.type}</dd></div>
-          <div className="grid gap-2 py-4 sm:grid-cols-[12rem_1fr]"><dt className="font-bold text-muted-foreground">Official source</dt><dd className="text-foreground">{scheme.source.url ? <a className="text-primary underline" href={scheme.source.url} target="_blank" rel="noreferrer">{scheme.source.name}</a> : "No source link available"}</dd></div>
+          <div className="grid gap-2 py-4 sm:grid-cols-[12rem_1fr]"><dt className="font-bold text-muted-foreground">Government source link</dt><dd className="text-foreground">{scheme.source.url ? <a className="text-primary underline" href={scheme.source.url} target="_blank" rel="noreferrer">{scheme.source.name}</a> : "No source link available"}</dd></div>
         </dl>
         <section className="mt-8" aria-labelledby="documents-heading">
           <h2 id="documents-heading" className="border-b border-border pb-3 text-lg font-bold">Documents needed</h2>

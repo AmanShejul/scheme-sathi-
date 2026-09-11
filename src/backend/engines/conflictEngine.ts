@@ -4,7 +4,7 @@ import type { Scheme } from "@/types/scheme-types";
 const EXPLICIT_CONFLICT_REASON = "The scheme data explicitly marks these schemes as conflicting.";
 
 function conflictIdsFor(scheme: Scheme): string[] {
-  return [...(scheme.conflictsWith ?? []), ...(scheme.conflicts ?? [])];
+  return scheme.conflictsWith;
 }
 
 /**

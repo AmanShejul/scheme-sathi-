@@ -2,6 +2,7 @@ import type { CitizenProfile } from "@/types/citizen-profile";
 import type { Scheme } from "@/types/scheme-types";
 
 import type { EligibilityResult } from "./eligibilityEngine";
+import { normalizeEligibilityRule } from "./eligibilityRuleNormalizer";
 
 export type MissingInformationItem = {
   field: string;
@@ -21,6 +22,51 @@ type InformationMapping = {
 };
 
 const mappings: Record<string, InformationMapping> = {
+  state: {
+    field: "state",
+    label: "State",
+    getValue: (profile) => profile.state,
+  },
+  occupation: {
+    field: "occupation",
+    label: "Occupation",
+    getValue: (profile) => profile.occupation,
+  },
+  gender: {
+    field: "gender",
+    label: "Gender",
+    getValue: (profile) => profile.gender,
+  },
+  social_category: {
+    field: "category",
+    label: "Social category",
+    getValue: (profile) => profile.category,
+  },
+  student: {
+    field: "studentStatus",
+    label: "Student status",
+    getValue: (profile) => profile.studentStatus,
+  },
+  disability: {
+    field: "disabilityStatus",
+    label: "Disability status",
+    getValue: (profile) => profile.disabilityStatus,
+  },
+  min_age: {
+    field: "age",
+    label: "Age",
+    getValue: (profile) => profile.age,
+  },
+  max_age: {
+    field: "age",
+    label: "Age",
+    getValue: (profile) => profile.age,
+  },
+  annual_income_max: {
+    field: "annualIncome",
+    label: "Annual family income",
+    getValue: (profile) => profile.annualIncome,
+  },
   academic_merit_required: {
     field: "academicMerit",
     label: "Academic merit",
@@ -93,7 +139,7 @@ function humanizeRule(rule: string) {
 }
 
 function activeRules(scheme: Scheme) {
-  return Object.entries(scheme.eligibility).filter(([, value]) => {
+  return Object.entries(scheme.eligibility).map(([rule, value]) => [normalizeEligibilityRule(rule), value] as const).filter(([, value]) => {
     if (value === null || value === undefined) return false;
     return !(Array.isArray(value) && value.length === 0);
   });

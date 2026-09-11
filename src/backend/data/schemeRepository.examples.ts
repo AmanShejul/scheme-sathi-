@@ -5,7 +5,7 @@ export const schemeRepositoryExamples = {
   recordCount: getAllSchemes().length,
   stateSchemes: getAllSchemes().filter((scheme) => scheme.level === "State").length,
   centralSchemes: getAllSchemes().filter((scheme) => scheme.level === "Central").length,
-  explicitConflicts: getAllSchemes().flatMap((scheme) => scheme.conflicts ?? []),
+  explicitConflicts: getAllSchemes().flatMap((scheme) => scheme.conflictsWith),
   validation: schemeValidation,
   initialization: schemeRepositoryInitialization,
 };

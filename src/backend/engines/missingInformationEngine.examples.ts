@@ -62,6 +62,11 @@ export const missingInformationExamples = {
     id: "no-missing-example",
     eligibility: { occupation: ["student"], state: "Maharashtra" },
   }),
+  aliasedIncomeRule: evaluate({
+    ...baseScheme,
+    id: "aliased-income-example",
+    eligibility: { maxIncome: 300000 },
+  }),
 };
 
 export function runMissingInformationExamples() {
@@ -72,6 +77,7 @@ export function runMissingInformationExamples() {
     ["missingLandholderStatus", ["landholderStatus"]],
     ["multipleMissingFields", ["annualIncome", "academicMerit", "residenceType"]],
     ["noMissingInformation", []],
+    ["aliasedIncomeRule", []],
   ];
 
   expected.forEach(([name, fields]) => {

@@ -28,7 +28,6 @@ const scheme = (
   name: `Scheme ${id}`,
   documents,
   source: { ...baseScheme.source, url: sourceUrl },
-  source_url: sourceUrl,
   application: { mode: "online", portalUrl, steps },
 });
 

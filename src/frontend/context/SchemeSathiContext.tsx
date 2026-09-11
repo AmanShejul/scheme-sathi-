@@ -11,8 +11,8 @@ import type {
   EligibilityResult,
   MissingDocument,
 } from "@/types/analysis-types";
-import { mockSchemes } from "@/lib/mock-schemes";
 import { analyzeCitizen } from "@/frontend/services/analyzeApi";
+import { fetchSchemes } from "@/frontend/services/schemesApi";
 
 export type FrontendEligibilityResult = EligibilityResult;
 export type FrontendConflict = ConflictResult;
@@ -63,6 +63,19 @@ export function SchemeSathiProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
+  const [schemes, setSchemes] = useState<Scheme[]>([]);
+
+  useEffect(() => {
+    let active = true;
+    void fetchSchemes().then((loadedSchemes) => {
+      if (active) setSchemes(loadedSchemes);
+    }).catch(() => {
+      if (active) setSchemes([]);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     window.setTimeout(() => {
@@ -192,7 +205,7 @@ export function SchemeSathiProvider({ children }: { children: ReactNode }) {
     () => ({
       citizenProfile,
       selectedDocuments,
-      schemes: mockSchemes,
+      schemes,
       eligibilityResults,
       conflicts,
       recommendedBundle,
@@ -209,7 +222,7 @@ export function SchemeSathiProvider({ children }: { children: ReactNode }) {
       selectScheme,
       resetAnalysis,
     }),
-    [citizenProfile, selectedDocuments, eligibilityResults, conflicts, recommendedBundle, missingDocuments, applicationPlan, analysisResult, selectedSchemeId, analysisComplete, loading, error, hydrated, setCitizenProfile, runAnalysis, selectScheme, resetAnalysis],
+    [citizenProfile, selectedDocuments, schemes, eligibilityResults, conflicts, recommendedBundle, missingDocuments, applicationPlan, analysisResult, selectedSchemeId, analysisComplete, loading, error, hydrated, setCitizenProfile, runAnalysis, selectScheme, resetAnalysis],
   );
 
   return <SchemeSathiContext.Provider value={value}>{children}</SchemeSathiContext.Provider>;

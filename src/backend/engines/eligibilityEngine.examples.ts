@@ -71,6 +71,11 @@ const examples = {
     id: "normalization-example",
     eligibility: { state: "Maharashtra", occupation: ["student"] },
   }),
+  normalizedRuleAliases: evaluateEligibility(studentOBCProfile, {
+    ...baseScheme,
+    id: "normalized-rule-aliases-example",
+    eligibility: { states: ["Maharashtra"], occupations: ["student"], category: ["OBC"], minAge: 18, maxIncome: 300000 },
+  }),
 };
 
 export const eligibilityEngineExamples = examples;
@@ -84,6 +89,7 @@ export function runEligibilityEngineExamples() {
     ["missingInformation", "insufficient_data"],
     ["unsupportedCondition", "insufficient_data"],
     ["normalizedValues", "potentially_eligible"],
+    ["normalizedRuleAliases", "potentially_eligible"],
   ];
 
   expected.forEach(([name, status]) => {
