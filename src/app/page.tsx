@@ -236,9 +236,7 @@ export default function Home() {
                   className="scheme-fade-up mt-7 max-w-2xl text-lg leading-8 text-muted-foreground sm:text-xl"
                   style={{ animationDelay: "0.3s" }}
                 >
-                  Scheme Sathi helps you identify relevant schemes, understand
-                  eligibility, find compatible benefits, and plan your next
-                  steps.
+                  Scheme Sathi analyzes your profile, identifies eligible schemes, detects conflicts, and recommends a compatible benefit bundle with clear application steps
                 </p>
 
                 <div
