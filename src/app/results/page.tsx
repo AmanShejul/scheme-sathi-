@@ -1,23 +1,32 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
 import { useSchemeSathi } from "@/frontend/context/SchemeSathiContext";
 
 export default function ResultsPage() {
-  const { analysisComplete, hydrated, eligibilityResults, conflicts, recommendedBundle, schemes, missingDocuments, runMockAnalysis, selectScheme } = useSchemeSathi();
+  const { analysisComplete, hydrated, error, eligibilityResults, conflicts, recommendedBundle, schemes, missingDocuments, selectScheme } = useSchemeSathi();
 
-  useEffect(() => {
-    if (hydrated && !analysisComplete) runMockAnalysis();
-  }, [hydrated, analysisComplete, runMockAnalysis]);
+  if (!hydrated || !analysisComplete) {
+    return (
+      <div className="min-h-screen bg-background">
+        <main className="mx-auto w-full max-w-4xl px-6 py-12 sm:px-10 sm:py-16 lg:px-12">
+          <p className="text-base font-bold text-primary">Results</p>
+          <h1 className="mt-3 text-4xl font-bold leading-tight text-foreground sm:text-5xl">No analysis result yet</h1>
+          <p className="mt-5 text-lg leading-8 text-muted-foreground">{error ?? "Complete your profile and run an analysis to see results."}</p>
+          <Button asChild className="mt-8"><Link href="/find-benefits">Start analysis</Link></Button>
+        </main>
+      </div>
+    );
+  }
 
   const potentiallyEligible = eligibilityResults.filter((result) => result.status === "potentially_eligible");
-  const notEligible = eligibilityResults.filter((result) => result.status === "not_eligible");
-  const primaryMockScheme = schemes.find((scheme) => scheme.id === potentiallyEligible[0]?.schemeId);
-  const eligibilityReasons = potentiallyEligible[0]?.reasons ?? [];
-  const notEligibleScheme = schemes.find((scheme) => scheme.id === notEligible[0]?.schemeId) ?? schemes[1];
+  const otherResults = eligibilityResults.filter((result) => result.status !== "potentially_eligible");
+  const potentiallyEligibleSchemes = potentiallyEligible.map((result) => ({
+    scheme: schemes.find((candidate) => candidate.id === result.schemeId),
+    result,
+  })).filter(({ scheme }) => scheme !== undefined);
   const metrics = [
     ["Schemes Evaluated", String(eligibilityResults.length)],
     ["Potentially Eligible", String(potentiallyEligible.length)],
@@ -52,27 +61,31 @@ export default function ResultsPage() {
             </div>
           </div>
           <div className="mt-5 border border-border">
-            {!primaryMockScheme ? <p className="px-5 py-5 text-sm text-muted-foreground">No potentially eligible schemes were found from the current analysis.</p> : (
-            <div className="flex flex-col gap-6 p-5 sm:p-7 lg:flex-row lg:items-start lg:justify-between">
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-3">
-                  <h3 className="text-2xl font-bold text-foreground">{primaryMockScheme.name}</h3>
-                  <span className="border border-primary px-2 py-1 text-xs font-bold text-primary">Potentially Eligible</span>
-                </div>
-                <p className="mt-2 text-sm text-muted-foreground">Category: {primaryMockScheme.category}</p>
-                <p className="mt-5 leading-7 text-foreground">{primaryMockScheme.benefit.description}</p>
-                <div className="mt-5">
-                  <p className="text-sm font-bold text-foreground">Eligibility reasons</p>
-                  <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-                    {eligibilityReasons.map((reason) => <li key={reason}>{reason}</li>)}
-                  </ul>
-                </div>
-                <p className="mt-5 text-sm text-muted-foreground"><span className="font-bold text-foreground">Document readiness:</span> Not assessed in this preview</p>
+            {potentiallyEligibleSchemes.length === 0 ? <p className="px-5 py-5 text-sm text-muted-foreground">No potentially eligible schemes were found from the current analysis.</p> : (
+              <div className="divide-y divide-border">
+                {potentiallyEligibleSchemes.map(({ scheme, result }) => (
+                  <div key={scheme!.id} className="flex flex-col gap-6 p-5 sm:p-7 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <h3 className="text-2xl font-bold text-foreground">{scheme!.name}</h3>
+                        <span className="border border-primary px-2 py-1 text-xs font-bold text-primary">Potentially Eligible</span>
+                      </div>
+                      <p className="mt-2 text-sm text-muted-foreground">Category: {scheme!.category}</p>
+                      <p className="mt-5 leading-7 text-foreground">{scheme!.benefit.description}</p>
+                      <div className="mt-5">
+                        <p className="text-sm font-bold text-foreground">Eligibility reasons</p>
+                        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+                          {result.reasons.map((reason) => <li key={reason}>{reason}</li>)}
+                        </ul>
+                      </div>
+                      <p className="mt-5 text-sm text-muted-foreground"><span className="font-bold text-foreground">Document readiness:</span> {missingDocuments.filter((document) => document.requiredFor.includes(scheme!.id) && document.status === "missing").length} missing</p>
+                    </div>
+                    <Button asChild variant="outline" className="shrink-0">
+                      <Link href={`/scheme/${scheme!.id}`} onClick={() => selectScheme(scheme!.id)}>View Details</Link>
+                    </Button>
+                  </div>
+                ))}
               </div>
-              <Button asChild variant="outline" className="shrink-0">
-                  <Link href={`/scheme/${primaryMockScheme.id}`} onClick={() => selectScheme(primaryMockScheme.id)}>View Details</Link>
-              </Button>
-            </div>
             )}
           </div>
         </section>
@@ -89,11 +102,15 @@ export default function ResultsPage() {
           </div>
         </section>
 
-        <section className="mt-14" aria-labelledby="not-eligible-heading">
-          <h2 id="not-eligible-heading" className="border-b border-border pb-4 text-xl font-bold text-muted-foreground">Not Eligible</h2>
+        <section className="mt-14" aria-labelledby="other-results-heading">
+          <h2 id="other-results-heading" className="border-b border-border pb-4 text-xl font-bold text-muted-foreground">Other eligibility outcomes</h2>
           <div className="mt-5 border border-border px-5 py-5 sm:px-7">
-            <p className="font-bold text-muted-foreground">{notEligibleScheme?.name ?? "No schemes"}</p>
-            <p className="mt-2 text-sm text-muted-foreground">{notEligible[0]?.reasons.join(" ") || "No not-eligible schemes were recorded."}</p>
+            {otherResults.length > 0 ? otherResults.map((result) => (
+              <div key={result.schemeId} className="border-b border-border py-3 last:border-b-0 first:pt-0 last:pb-0">
+                <p className="font-bold text-muted-foreground">{schemes.find((scheme) => scheme.id === result.schemeId)?.name ?? result.schemeId}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{result.status === "insufficient_data" ? "Insufficient information" : "Not eligible"}: {result.reasons.join(" ") || "No additional explanation was returned."}</p>
+              </div>
+            )) : <p className="text-sm text-muted-foreground">No other eligibility outcomes were recorded.</p>}
           </div>
         </section>
 
@@ -102,10 +119,8 @@ export default function ResultsPage() {
           <h2 id="bundle-heading" className="mt-2 text-2xl font-bold text-foreground">{recommendedBundle?.name ?? "No bundle available"}</h2>
           <p className="mt-3 text-sm text-muted-foreground">Included schemes: {recommendedBundle?.schemeIds.map((id) => schemes.find((scheme) => scheme.id === id)?.name).filter(Boolean).join(", ") || "None"}</p>
           <p className="mt-2 text-sm text-muted-foreground">Score: {recommendedBundle?.score ?? "Not available"}</p>
-          <p className="mt-2 text-sm text-muted-foreground">{recommendedBundle?.explanation ?? "No compatible bundle was created."}</p>
-          <Button asChild className="mt-6">
-            <Link href="/results/bundle">View Bundle</Link>
-          </Button>
+          {recommendedBundle?.reasons.map((reason) => <p key={reason} className="mt-2 text-sm text-muted-foreground">{reason}</p>)}
+          {recommendedBundle && <Button asChild className="mt-6"><Link href="/results/bundle">View Bundle</Link></Button>}
         </section>
 
         <section className="mt-14 border-t border-border pt-7" aria-labelledby="next-step-heading">

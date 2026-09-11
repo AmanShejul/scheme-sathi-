@@ -60,7 +60,7 @@ function RadioGroup({
 
 export function CitizenProfileForm() {
   const router = useRouter();
-  const { citizenProfile, setCitizenProfile } = useSchemeSathi();
+  const { citizenProfile, setCitizenProfile, loading, error: analysisError } = useSchemeSathi();
   const [step, setStep] = useState(0);
   const [profile, setProfile] = useState<CitizenProfile>(citizenProfile ?? initialCitizenProfile);
   const [errors, setErrors] = useState<string[]>([]);
@@ -116,6 +116,12 @@ export function CitizenProfileForm() {
 
   function nextStep() {
     if (validateCurrentStep()) setStep((current) => Math.min(current + 1, steps.length - 1));
+  }
+
+  function submitAnalysis() {
+    if (!validateCurrentStep()) return;
+    setCitizenProfile(profile);
+    router.push("/analysis");
   }
 
   function renderStep() {
@@ -277,11 +283,17 @@ export function CitizenProfileForm() {
           </div>
         )}
 
+        {analysisError && (
+          <div role="alert" className="mb-6 border border-primary/40 bg-[#fffaf6] px-4 py-3 text-sm text-foreground">
+            {analysisError} You can review your details and try again.
+          </div>
+        )}
+
         {renderStep()}
 
         <div className="mt-10 flex flex-col-reverse gap-3 border-t border-border pt-6 sm:flex-row sm:justify-between">
           {step > 0 ? <Button type="button" variant="outline" onClick={() => { setErrors([]); setStep((current) => current - 1); }}>Back</Button> : <span />}
-          {step < steps.length - 1 ? <Button type="button" onClick={nextStep}>Next</Button> : <Button type="button" onClick={() => { if (validateCurrentStep()) { setCitizenProfile(profile); router.push("/analysis"); } }}>Analyze My Benefits</Button>}
+          {step < steps.length - 1 ? <Button type="button" onClick={nextStep}>Next</Button> : <Button type="button" disabled={loading} onClick={submitAnalysis}>{loading ? "Analyzing..." : "Analyze My Benefits"}</Button>}
         </div>
       </div>
     </div>

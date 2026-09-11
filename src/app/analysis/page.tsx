@@ -6,7 +6,6 @@ import {
   ClipboardCheck,
   FileSearch,
   ListChecks,
-  Search,
   ShieldCheck,
   UserRound,
 } from "lucide-react";
@@ -17,22 +16,20 @@ import { Button } from "@/components/ui/button";
 import { useSchemeSathi } from "@/frontend/context/SchemeSathiContext";
 
 const activities = [
-  { label: "Understanding citizen profile", status: "complete", icon: UserRound },
-  { label: "Loading scheme knowledge", status: "complete", icon: Search },
-  { label: "Evaluating eligibility", status: "complete", icon: ClipboardCheck },
-  { label: "Detecting conflicts", status: "complete", icon: ShieldCheck },
-  { label: "Generating compatible bundles", status: "complete", icon: ListChecks },
-  { label: "Optimizing bundle", status: "current", icon: ListChecks },
-  { label: "Checking documents", status: "pending", icon: FileSearch },
-  { label: "Preparing application plan", status: "pending", icon: ClipboardCheck },
+  { label: "Understanding citizen profile", icon: UserRound },
+  { label: "Evaluating eligibility", icon: ClipboardCheck },
+  { label: "Checking compatibility", icon: ShieldCheck },
+  { label: "Optimizing benefit bundle", icon: ListChecks },
+  { label: "Checking documents", icon: FileSearch },
+  { label: "Preparing application plan", icon: ClipboardCheck },
 ] as const;
 
 export default function AnalysisPage() {
-  const { analysisComplete, loading, hydrated, eligibilityResults, conflicts, recommendedBundle, runMockAnalysis } = useSchemeSathi();
+  const { citizenProfile, analysisComplete, loading, error, hydrated, eligibilityResults, conflicts, recommendedBundle, runAnalysis } = useSchemeSathi();
 
   useEffect(() => {
-    if (hydrated && !analysisComplete) runMockAnalysis();
-  }, [hydrated, analysisComplete, runMockAnalysis]);
+    if (hydrated && citizenProfile && !analysisComplete && !loading && !error) runAnalysis();
+  }, [hydrated, citizenProfile, analysisComplete, loading, error, runAnalysis]);
 
   const metrics = [
     { label: "Schemes Evaluated", value: String(eligibilityResults.length) },
@@ -60,10 +57,12 @@ export default function AnalysisPage() {
               <h2 id="activity-heading" className="text-xl font-bold text-foreground">
                 Analysis activity
               </h2>
-              <span className="text-sm text-muted-foreground">{loading ? "Working..." : "Local preview"}</span>
+              <span className="text-sm text-muted-foreground">{loading ? "Working..." : error ? "Needs attention" : "Analysis ready"}</span>
             </div>
             <ol className="mt-2">
-              {activities.map(({ label, status, icon: Icon }, index) => (
+              {activities.map(({ label, icon: Icon }, index) => {
+                const status = error ? "pending" : analysisComplete ? "complete" : index === 0 ? "current" : "pending";
+                return (
                 <li key={label} className="relative flex gap-4 py-4">
                   {index < activities.length - 1 && (
                     <span className="absolute left-[0.6875rem] top-10 h-[calc(100%-1.25rem)] w-px bg-border" aria-hidden="true" />
@@ -86,7 +85,8 @@ export default function AnalysisPage() {
                     {status === "current" && <span className="text-xs font-bold text-primary">In progress</span>}
                   </div>
                 </li>
-              ))}
+                );
+              })}
             </ol>
           </section>
 
@@ -106,6 +106,11 @@ export default function AnalysisPage() {
             </dl>
           </section>
         </div>
+
+        {error && <div role="alert" className="mt-10 border-t border-border pt-6">
+          <p className="text-sm text-primary">{error}</p>
+          <Button className="mt-4" onClick={() => runAnalysis()} disabled={loading}>{loading ? "Retrying..." : "Retry analysis"}</Button>
+        </div>}
 
         {analysisComplete && <div className="mt-10 border-t border-border pt-6">
           <Button asChild size="lg">

@@ -16,7 +16,20 @@ const includedFallbackText =
   "Benefit details available in the scheme record.";
 
 export default function BundlePage() {
-  const { recommendedBundle, schemes } = useSchemeSathi();
+  const { analysisComplete, hydrated, error, recommendedBundle, schemes, missingDocuments } = useSchemeSathi();
+
+  if (!hydrated || !analysisComplete || !recommendedBundle) {
+    return (
+      <main className="min-h-screen bg-background px-6 py-12 sm:px-10 lg:px-12">
+        <div className="mx-auto max-w-3xl">
+          <p className="text-sm font-bold uppercase tracking-[0.14em] text-primary">Document readiness</p>
+          <h1 className="mt-3 text-4xl font-bold">No document assessment available</h1>
+          <p className="mt-5 text-muted-foreground">{error ?? "Run an analysis with a recommended bundle to review document readiness."}</p>
+          <Button asChild className="mt-8"><Link href="/results">Back to Results</Link></Button>
+        </div>
+      </main>
+    );
+  }
 
   const includedSchemes =
     recommendedBundle?.schemeIds
@@ -167,6 +180,22 @@ export default function BundlePage() {
                 />
                 Indicative recommendation
               </div>
+            </div>
+          </section>
+
+          <section className="mt-10 border border-border bg-background p-6 sm:p-8" aria-labelledby="document-readiness-heading">
+            <p className="text-xs font-bold uppercase tracking-wide text-primary">Document readiness</p>
+            <h2 id="document-readiness-heading" className="mt-2 text-2xl font-bold">Documents for this bundle</h2>
+            <div className="mt-5 divide-y divide-border border-y border-border">
+              {missingDocuments.length > 0 ? missingDocuments.map((document) => (
+                <div key={document.document} className="flex flex-col gap-2 px-4 py-5 sm:flex-row sm:items-start sm:justify-between sm:px-5">
+                  <div>
+                    <p className="font-bold">{document.document}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">Required for: {document.requiredFor.join(", ")}</p>
+                  </div>
+                  <span className="text-sm font-semibold text-primary">{document.status === "available" ? "Marked available by citizen" : "Missing"}</span>
+                </div>
+              )) : <p className="px-4 py-5 text-sm text-muted-foreground">No required documents were returned for this bundle.</p>}
             </div>
           </section>
 

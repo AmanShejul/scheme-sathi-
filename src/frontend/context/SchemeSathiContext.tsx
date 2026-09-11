@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
-import { initialCitizenProfile, type CitizenProfile, type DocumentStatus } from "@/types/citizen-profile";
+import { type CitizenProfile, type DocumentStatus } from "@/types/citizen-profile";
 import type { Scheme } from "@/types/scheme-types";
 import type {
   AnalysisResult,
@@ -12,7 +12,7 @@ import type {
   MissingDocument,
 } from "@/types/analysis-types";
 import { mockSchemes } from "@/lib/mock-schemes";
-import { evaluateEligibility } from "@/backend/engines/eligibilityEngine";
+import { analyzeCitizen } from "@/frontend/services/analyzeApi";
 
 export type FrontendEligibilityResult = EligibilityResult;
 export type FrontendConflict = ConflictResult;
@@ -27,12 +27,14 @@ type SchemeSathiContextValue = {
   recommendedBundle: RecommendedBundle | null;
   missingDocuments: MissingDocument[];
   applicationPlan: AnalysisResult["applicationPlan"];
+  analysisResult: AnalysisResult | null;
   selectedSchemeId: string | null;
   analysisComplete: boolean;
   loading: boolean;
+  error: string | null;
   hydrated: boolean;
   setCitizenProfile: (profile: CitizenProfile) => void;
-  runMockAnalysis: () => Promise<void>;
+  runAnalysis: (profileOverride?: CitizenProfile) => Promise<boolean>;
   selectScheme: (schemeId: string) => void;
   resetAnalysis: () => void;
 };
@@ -55,9 +57,11 @@ export function SchemeSathiProvider({ children }: { children: ReactNode }) {
   const [recommendedBundle, setRecommendedBundle] = useState<RecommendedBundle | null>(null);
   const [missingDocuments, setMissingDocuments] = useState<MissingDocument[]>([]);
   const [applicationPlan, setApplicationPlan] = useState<AnalysisResult["applicationPlan"]>([]);
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [selectedSchemeId, setSelectedSchemeId] = useState<string | null>(null);
   const [analysisComplete, setAnalysisComplete] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -67,12 +71,24 @@ export function SchemeSathiProvider({ children }: { children: ReactNode }) {
         if (saved) {
           const state = JSON.parse(saved) as Partial<SchemeSathiContextValue>;
           if (state.citizenProfile) setCitizenProfileState(state.citizenProfile);
-          if (Array.isArray(state.selectedDocuments)) setSelectedDocuments(state.selectedDocuments);
-          if (Array.isArray(state.eligibilityResults)) setEligibilityResults(state.eligibilityResults);
-          if (Array.isArray(state.conflicts)) setConflicts(state.conflicts);
-          if (state.recommendedBundle) setRecommendedBundle(state.recommendedBundle);
-          if (Array.isArray(state.missingDocuments)) setMissingDocuments(state.missingDocuments);
-          if (Array.isArray(state.applicationPlan)) setApplicationPlan(state.applicationPlan);
+          if (Array.isArray(state.selectedDocuments)) {
+            const legacyDocumentKeys = new Map(documentLabels.map(({ key, label }) => [key, label]));
+            setSelectedDocuments(state.selectedDocuments.map((document) => legacyDocumentKeys.get(document as keyof CitizenProfile["documents"]) ?? document));
+          }
+          if (state.analysisResult) {
+            setAnalysisResult(state.analysisResult);
+            setEligibilityResults(state.analysisResult.eligibilityResults);
+            setConflicts(state.analysisResult.conflicts);
+            setRecommendedBundle(state.analysisResult.recommendedBundle);
+            setMissingDocuments(state.analysisResult.missingDocuments);
+            setApplicationPlan(state.analysisResult.applicationPlan);
+          } else {
+            if (Array.isArray(state.eligibilityResults)) setEligibilityResults(state.eligibilityResults);
+            if (Array.isArray(state.conflicts)) setConflicts(state.conflicts);
+            if (state.recommendedBundle) setRecommendedBundle(state.recommendedBundle);
+            if (Array.isArray(state.missingDocuments)) setMissingDocuments(state.missingDocuments);
+            if (Array.isArray(state.applicationPlan)) setApplicationPlan(state.applicationPlan);
+          }
           if (typeof state.selectedSchemeId === "string") setSelectedSchemeId(state.selectedSchemeId);
           if (typeof state.analysisComplete === "boolean") setAnalysisComplete(state.analysisComplete);
         }
@@ -89,6 +105,7 @@ export function SchemeSathiProvider({ children }: { children: ReactNode }) {
       window.sessionStorage.setItem("scheme-sathi-state", JSON.stringify({
         citizenProfile,
         selectedDocuments,
+        analysisResult,
         eligibilityResults,
         conflicts,
         recommendedBundle,
@@ -100,7 +117,7 @@ export function SchemeSathiProvider({ children }: { children: ReactNode }) {
     } catch {
       // Storage is optional; the in-memory context remains the source of truth.
     }
-  }, [hydrated, citizenProfile, selectedDocuments, eligibilityResults, conflicts, recommendedBundle, missingDocuments, applicationPlan, selectedSchemeId, analysisComplete]);
+  }, [hydrated, citizenProfile, selectedDocuments, analysisResult, eligibilityResults, conflicts, recommendedBundle, missingDocuments, applicationPlan, selectedSchemeId, analysisComplete]);
 
   const clearAnalysis = useCallback(() => {
     setEligibilityResults([]);
@@ -108,81 +125,58 @@ export function SchemeSathiProvider({ children }: { children: ReactNode }) {
     setRecommendedBundle(null);
     setMissingDocuments([]);
     setApplicationPlan([]);
+    setAnalysisResult(null);
     setSelectedSchemeId(null);
     setAnalysisComplete(false);
     setLoading(false);
+    setError(null);
   }, []);
 
   const setCitizenProfile = useCallback((profile: CitizenProfile) => {
     setCitizenProfileState(profile);
-    setSelectedDocuments(documentLabels.filter(({ key }) => profile.documents[key] === "available").map(({ key }) => key));
+    setSelectedDocuments(documentLabels.filter(({ key }) => profile.documents[key] === "available").map(({ label }) => label));
     clearAnalysis();
   }, [clearAnalysis]);
 
-  const runMockAnalysis = useCallback(async () => {
-    setLoading(true);
-    setAnalysisComplete(false);
-    await new Promise((resolve) => window.setTimeout(resolve, 1200));
-
-    if (!citizenProfile) {
-      clearAnalysis();
-      return;
+  const runAnalysis = useCallback(async (profileOverride?: CitizenProfile) => {
+    if (loading) return false;
+    const profileToAnalyze = profileOverride ?? citizenProfile;
+    if (!profileToAnalyze) {
+      setError("Please complete your citizen profile before starting the analysis.");
+      return false;
     }
 
-    const profile = citizenProfile ?? initialCitizenProfile;
-    const evaluated = mockSchemes.map((scheme) => {
-      const result = evaluateEligibility(profile, scheme);
-      return { schemeId: scheme.id, status: result.status, reasons: result.reasons, matchedRules: result.matchedRules, failedRules: result.failedRules };
-    });
-    const potentiallyEligible = evaluated.filter((result) => result.status === "potentially_eligible");
-    const eligibleIds = new Set(potentiallyEligible.map((result) => result.schemeId));
-    const detectedConflicts: FrontendConflict[] = [];
-    mockSchemes.forEach((scheme) => {
-      scheme.conflictsWith.filter((id) => eligibleIds.has(id) && eligibleIds.has(scheme.id)).forEach((conflictId) => {
-        if (!detectedConflicts.some((conflict) => conflict.schemeAId === conflictId && conflict.schemeBId === scheme.id)) {
-          detectedConflicts.push({ schemeA: scheme.id, schemeB: conflictId, schemeAId: scheme.id, schemeBId: conflictId, reason: "Configured scheme conflict." });
-        }
-      });
-    });
-    const excludedSchemeIds = new Set(detectedConflicts.flatMap((conflict) => [conflict.schemeB]));
-    const bundleIds = potentiallyEligible.map((result) => result.schemeId).filter((id) => !excludedSchemeIds.has(id));
-    const bundleSchemes = mockSchemes.filter((scheme) => bundleIds.includes(scheme.id));
-    const missing = Array.from(new Set(bundleSchemes.flatMap((scheme) => scheme.documents))).map((document) => ({
-      document,
-      requiredFor: bundleSchemes.filter((candidate) => candidate.documents.includes(document)).map((candidate) => candidate.id),
-      status: selectedDocuments.includes(document) ? "available" as const : "missing" as const,
-      name: document,
-      schemeIds: bundleSchemes.filter((candidate) => candidate.documents.includes(document) && !selectedDocuments.includes(document)).map((candidate) => candidate.id),
-    })).filter((item) => item.status === "missing");
-
-    const steps = bundleSchemes.map((scheme, index) => ({
-      stepNumber: index + 1,
-      schemeId: scheme.id,
-      schemeName: scheme.name,
-      action: scheme.application.steps[0] ?? "Review the official application information for this scheme.",
-      documents: scheme.documents,
-      officialPortalUrl: scheme.application.portalUrl ?? scheme.source.url ?? null,
-      requiredDocuments: scheme.documents,
-      portalUrl: scheme.application.portalUrl ?? scheme.source.url ?? null,
-      completed: false,
-    }));
-
-    setEligibilityResults(evaluated);
-    setConflicts(detectedConflicts);
-    setRecommendedBundle(bundleSchemes.length > 0 ? {
-      name: "Recommended Development Bundle",
-      schemeIds: bundleSchemes.map((scheme) => scheme.id),
-      score: bundleSchemes.length,
-      reasons: ["Selected from potentially eligible schemes after removing configured conflicts."],
-      explanation: "Selected from potentially eligible schemes after removing configured conflicts.",
-      excludedSchemes: [...excludedSchemeIds],
-      excludedSchemeIds: [...excludedSchemeIds],
-    } : null);
-    setMissingDocuments(missing);
-    setApplicationPlan(steps);
-    setLoading(false);
-    setAnalysisComplete(true);
-  }, [citizenProfile, clearAnalysis, selectedDocuments]);
+    if (profileOverride) {
+      setCitizenProfileState(profileOverride);
+      setSelectedDocuments(documentLabels.filter(({ key }) => profileOverride.documents[key] === "available").map(({ label }) => label));
+    }
+    setLoading(true);
+    setAnalysisComplete(false);
+    setError(null);
+    try {
+      const result = await analyzeCitizen(profileToAnalyze, profileOverride ? documentLabels.filter(({ key }) => profileOverride.documents[key] === "available").map(({ label }) => label) : selectedDocuments);
+      setAnalysisResult(result);
+      setEligibilityResults(result.eligibilityResults);
+      setConflicts(result.conflicts);
+      setRecommendedBundle(result.recommendedBundle);
+      setMissingDocuments(result.missingDocuments);
+      setApplicationPlan(result.applicationPlan);
+      setAnalysisComplete(true);
+      return true;
+    } catch (analysisError) {
+      setAnalysisResult(null);
+      setEligibilityResults([]);
+      setConflicts([]);
+      setRecommendedBundle(null);
+      setMissingDocuments([]);
+      setApplicationPlan([]);
+      setAnalysisComplete(false);
+      setError(analysisError instanceof Error ? analysisError.message : "The analysis could not be completed. Please try again.");
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }, [citizenProfile, loading, selectedDocuments]);
 
   const selectScheme = useCallback((schemeId: string) => {
     setSelectedSchemeId(schemeId);
@@ -204,16 +198,18 @@ export function SchemeSathiProvider({ children }: { children: ReactNode }) {
       recommendedBundle,
       missingDocuments,
       applicationPlan,
+      analysisResult,
       selectedSchemeId,
       analysisComplete,
       loading,
+      error,
       hydrated,
       setCitizenProfile,
-      runMockAnalysis,
+      runAnalysis,
       selectScheme,
       resetAnalysis,
     }),
-    [citizenProfile, selectedDocuments, eligibilityResults, conflicts, recommendedBundle, missingDocuments, applicationPlan, selectedSchemeId, analysisComplete, loading, hydrated, setCitizenProfile, runMockAnalysis, selectScheme, resetAnalysis],
+    [citizenProfile, selectedDocuments, eligibilityResults, conflicts, recommendedBundle, missingDocuments, applicationPlan, analysisResult, selectedSchemeId, analysisComplete, loading, error, hydrated, setCitizenProfile, runAnalysis, selectScheme, resetAnalysis],
   );
 
   return <SchemeSathiContext.Provider value={value}>{children}</SchemeSathiContext.Provider>;

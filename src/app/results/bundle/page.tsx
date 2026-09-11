@@ -13,7 +13,20 @@ import { Button } from "@/components/ui/button";
 import { useSchemeSathi } from "@/frontend/context/SchemeSathiContext";
 
 export default function BundlePage() {
-  const { recommendedBundle, schemes } = useSchemeSathi();
+  const { analysisComplete, hydrated, error, recommendedBundle, schemes } = useSchemeSathi();
+
+  if (!hydrated || !analysisComplete || !recommendedBundle) {
+    return (
+      <main className="min-h-screen bg-background px-6 py-12 sm:px-10 lg:px-12">
+        <div className="mx-auto max-w-3xl">
+          <p className="text-sm font-bold uppercase tracking-[0.14em] text-primary">Recommended bundle</p>
+          <h1 className="mt-3 text-4xl font-bold">No bundle available</h1>
+          <p className="mt-5 text-muted-foreground">{error ?? "Run an analysis to generate a compatible candidate bundle."}</p>
+          <Button asChild className="mt-8"><Link href="/results">Back to Results</Link></Button>
+        </div>
+      </main>
+    );
+  }
 
   const includedSchemes =
     recommendedBundle?.schemeIds
