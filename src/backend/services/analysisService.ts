@@ -1,14 +1,8 @@
-import type { AnalysisResult, EligibilityResult } from "@/types/analysis-types";
+import type { AnalysisResult } from "@/types/analysis-types";
 import type { CitizenProfile } from "@/types/citizen-profile";
 
 import { getAllSchemes, schemeValidation } from "../data/schemeRepository";
-import { generateApplicationPlan } from "../engines/applicationPlanEngine";
-import { generateBundles } from "../engines/bundleEngine";
-import { optimizeBundle } from "../engines/bundleOptimizer";
-import { detectConflicts } from "../engines/conflictEngine";
-import { findMissingDocuments } from "../engines/documentEngine";
-import { evaluateEligibility } from "../engines/eligibilityEngine";
-import { findMissingInformation, type MissingInformationResult } from "../engines/missingInformationEngine";
+import { runAgent } from "./agentService";
 
 export type AnalysisServiceErrorCode = "invalid_profile" | "repository_failure" | "validation_failure" | "engine_failure";
 
@@ -60,11 +54,7 @@ function formatError(error: unknown): string {
   return error instanceof Error ? error.message : "Unknown failure.";
 }
 
-function runEligibility(schemes: ReturnType<typeof getAllSchemes>, profile: CitizenProfile): EligibilityResult[] {
-  return schemes.map((scheme) => evaluateEligibility(profile, scheme));
-}
-
-/** Runs the complete deterministic Scheme Sathi analysis pipeline. */
+/** Runs the complete Scheme Sathi analysis through the controlled agent orchestrator. */
 export function analyze(profile: CitizenProfile, availableDocuments: string[]): AnalysisResult {
   validateInputs(profile, availableDocuments);
 
@@ -81,33 +71,7 @@ export function analyze(profile: CitizenProfile, availableDocuments: string[]): 
   }
 
   try {
-    const eligibilityResults = runEligibility(schemes, profile);
-    const resultsByScheme = new Map(eligibilityResults.map((result) => [result.schemeId, result]));
-    const missingInformation: MissingInformationResult[] = eligibilityResults
-      .filter((result) => result.status === "insufficient_data")
-      .map((result) => {
-        const scheme = schemes.find((candidate) => candidate.id === result.schemeId);
-        if (!scheme) throw new Error(`Eligibility result references unknown scheme ${result.schemeId}.`);
-        return findMissingInformation(scheme, profile, result);
-      });
-    const potentiallyEligibleSchemes = schemes.filter((scheme) => resultsByScheme.get(scheme.id)?.status === "potentially_eligible");
-    const conflicts = detectConflicts(potentiallyEligibleSchemes);
-    const candidates = generateBundles(potentiallyEligibleSchemes, conflicts);
-    const recommendedBundle = optimizeBundle(profile, candidates, eligibilityResults, missingInformation);
-
-    if (!recommendedBundle) {
-      return {
-        eligibilityResults,
-        conflicts,
-        recommendedBundle: null,
-        missingDocuments: [],
-        applicationPlan: [],
-      };
-    }
-
-    const missingDocuments = findMissingDocuments(recommendedBundle, potentiallyEligibleSchemes, availableDocuments);
-    const applicationPlan = generateApplicationPlan(recommendedBundle, potentiallyEligibleSchemes, missingDocuments);
-    return { eligibilityResults, conflicts, recommendedBundle, missingDocuments, applicationPlan };
+    return runAgent({ citizenProfile: profile, availableDocuments, schemes }).analysisResult;
   } catch (error) {
     if (error instanceof AnalysisServiceError) throw error;
     throw new AnalysisServiceError("engine_failure", `Analysis engine failure: ${formatError(error)}`);
