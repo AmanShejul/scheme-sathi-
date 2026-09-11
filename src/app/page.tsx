@@ -229,7 +229,7 @@ export default function Home() {
                   className="scheme-fade-up mt-5 max-w-4xl text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl"
                   style={{ animationDelay: "0.2s" }}
                 >
-                  Find the government benefits you may be eligible for.
+                  Find the right combination of government benefits.
                 </h1>
 
                 <p
