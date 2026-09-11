@@ -4,50 +4,19 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 
 import { initialCitizenProfile, type CitizenProfile, type DocumentStatus } from "@/types/citizen-profile";
 import type { Scheme } from "@/types/scheme-types";
+import type {
+  AnalysisResult,
+  Bundle,
+  ConflictResult,
+  EligibilityResult,
+  MissingDocument,
+} from "@/types/analysis-types";
 import { mockSchemes } from "@/lib/mock-schemes";
 import { evaluateEligibility } from "@/backend/engines/eligibilityEngine";
 
-export type FrontendEligibilityResult = {
-  schemeId: string;
-  status: "potentially_eligible" | "not_eligible" | "insufficient_data";
-  reasons: string[];
-  matchedRules: string[];
-  failedRules: string[];
-};
-
-export type FrontendConflict = {
-  schemeAId: string;
-  schemeBId: string;
-  reason: string;
-};
-
-export type RecommendedBundle = {
-  name: string;
-  schemeIds: string[];
-  score: string;
-  explanation: string;
-  excludedSchemeIds: string[];
-};
-
-export type MissingDocument = {
-  name: string;
-  schemeIds: string[];
-};
-
-export type ApplicationStep = {
-  stepNumber: number;
-  schemeId: string;
-  schemeName: string;
-  action: string;
-  requiredDocuments: string[];
-  portalUrl: string | null;
-  completed: boolean;
-};
-
-export type ApplicationPlan = {
-  steps: string[];
-  portalUrl: string;
-};
+export type FrontendEligibilityResult = EligibilityResult;
+export type FrontendConflict = ConflictResult;
+export type RecommendedBundle = Bundle;
 
 type SchemeSathiContextValue = {
   citizenProfile: CitizenProfile | null;
@@ -57,7 +26,7 @@ type SchemeSathiContextValue = {
   conflicts: FrontendConflict[];
   recommendedBundle: RecommendedBundle | null;
   missingDocuments: MissingDocument[];
-  applicationPlan: ApplicationStep[];
+  applicationPlan: AnalysisResult["applicationPlan"];
   selectedSchemeId: string | null;
   analysisComplete: boolean;
   loading: boolean;
@@ -85,7 +54,7 @@ export function SchemeSathiProvider({ children }: { children: ReactNode }) {
   const [conflicts, setConflicts] = useState<FrontendConflict[]>([]);
   const [recommendedBundle, setRecommendedBundle] = useState<RecommendedBundle | null>(null);
   const [missingDocuments, setMissingDocuments] = useState<MissingDocument[]>([]);
-  const [applicationPlan, setApplicationPlan] = useState<ApplicationStep[]>([]);
+  const [applicationPlan, setApplicationPlan] = useState<AnalysisResult["applicationPlan"]>([]);
   const [selectedSchemeId, setSelectedSchemeId] = useState<string | null>(null);
   const [analysisComplete, setAnalysisComplete] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -171,23 +140,28 @@ export function SchemeSathiProvider({ children }: { children: ReactNode }) {
     mockSchemes.forEach((scheme) => {
       scheme.conflictsWith.filter((id) => eligibleIds.has(id) && eligibleIds.has(scheme.id)).forEach((conflictId) => {
         if (!detectedConflicts.some((conflict) => conflict.schemeAId === conflictId && conflict.schemeBId === scheme.id)) {
-          detectedConflicts.push({ schemeAId: scheme.id, schemeBId: conflictId, reason: "Configured scheme conflict." });
+          detectedConflicts.push({ schemeA: scheme.id, schemeB: conflictId, schemeAId: scheme.id, schemeBId: conflictId, reason: "Configured scheme conflict." });
         }
       });
     });
-    const excludedSchemeIds = new Set(detectedConflicts.flatMap((conflict) => [conflict.schemeBId]));
+    const excludedSchemeIds = new Set(detectedConflicts.flatMap((conflict) => [conflict.schemeB]));
     const bundleIds = potentiallyEligible.map((result) => result.schemeId).filter((id) => !excludedSchemeIds.has(id));
     const bundleSchemes = mockSchemes.filter((scheme) => bundleIds.includes(scheme.id));
-    const missing = bundleSchemes.flatMap((scheme) => scheme.documents.map((document) => ({
+    const missing = Array.from(new Set(bundleSchemes.flatMap((scheme) => scheme.documents))).map((document) => ({
+      document,
+      requiredFor: bundleSchemes.filter((candidate) => candidate.documents.includes(document)).map((candidate) => candidate.id),
+      status: selectedDocuments.includes(document) ? "available" as const : "missing" as const,
       name: document,
       schemeIds: bundleSchemes.filter((candidate) => candidate.documents.includes(document) && !selectedDocuments.includes(document)).map((candidate) => candidate.id),
-    }))).filter((document, index, documents) => document.schemeIds.length > 0 && documents.findIndex((item) => item.name === document.name) === index);
+    })).filter((item) => item.status === "missing");
 
     const steps = bundleSchemes.map((scheme, index) => ({
       stepNumber: index + 1,
       schemeId: scheme.id,
       schemeName: scheme.name,
       action: scheme.application.steps[0] ?? "Review the official application information for this scheme.",
+      documents: scheme.documents,
+      officialPortalUrl: scheme.application.portalUrl ?? scheme.source.url ?? null,
       requiredDocuments: scheme.documents,
       portalUrl: scheme.application.portalUrl ?? scheme.source.url ?? null,
       completed: false,
@@ -198,8 +172,10 @@ export function SchemeSathiProvider({ children }: { children: ReactNode }) {
     setRecommendedBundle(bundleSchemes.length > 0 ? {
       name: "Recommended Development Bundle",
       schemeIds: bundleSchemes.map((scheme) => scheme.id),
-      score: "Based on configured local rules",
+      score: bundleSchemes.length,
+      reasons: ["Selected from potentially eligible schemes after removing configured conflicts."],
       explanation: "Selected from potentially eligible schemes after removing configured conflicts.",
+      excludedSchemes: [...excludedSchemeIds],
       excludedSchemeIds: [...excludedSchemeIds],
     } : null);
     setMissingDocuments(missing);

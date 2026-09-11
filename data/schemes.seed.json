@@ -1,0 +1,1494 @@
+{
+  "dataset_name": "SchemeWise AI - Government Scheme Seed Dataset",
+  "version": "1.0",
+  "scheme_count": 50,
+  "schemes": [
+    {
+      "id": "SCH001",
+      "name": "Pradhan Mantri Kisan Samman Nidhi",
+      "level": "Central",
+      "state": "All India",
+      "category": "Agriculture",
+      "target_groups": [
+        "farmer",
+        "landholder"
+      ],
+      "eligibility": {
+        "occupation": [
+          "farmer"
+        ],
+        "landholder": true
+      },
+      "benefit": {
+        "type": "financial_assistance",
+        "description": "Income support to eligible farmer families",
+        "amount": "6000 per year",
+        "frequency": "annual"
+      },
+      "documents": [
+        "Aadhaar",
+        "land records",
+        "bank account"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/schemes/pradhan-mantri-kisan-samman-nidhi",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH002",
+      "name": "Pradhan Mantri Fasal Bima Yojana",
+      "level": "Central",
+      "state": "All India",
+      "category": "Agriculture",
+      "target_groups": [
+        "farmer"
+      ],
+      "eligibility": {
+        "occupation": [
+          "farmer"
+        ],
+        "crop_insurance": true
+      },
+      "benefit": {
+        "type": "insurance",
+        "description": "Crop insurance against covered crop losses"
+      },
+      "documents": [
+        "Aadhaar or ID",
+        "land/tenancy records",
+        "crop details",
+        "bank account"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH003",
+      "name": "Kisan Credit Card",
+      "level": "Central",
+      "state": "All India",
+      "category": "Agriculture",
+      "target_groups": [
+        "farmer",
+        "tenant_farmer",
+        "sharecropper"
+      ],
+      "eligibility": {
+        "occupation": [
+          "farmer",
+          "tenant_farmer",
+          "sharecropper"
+        ],
+        "min_age": 18,
+        "max_age": 75
+      },
+      "benefit": {
+        "type": "credit",
+        "description": "Credit support for cultivation and allied activities"
+      },
+      "documents": [
+        "ID proof",
+        "address proof",
+        "landholding proof",
+        "cropping details",
+        "bank documents"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/schemes/kcc",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH004",
+      "name": "Pradhan Mantri Krishi Sinchayee Yojana",
+      "level": "Central",
+      "state": "All India",
+      "category": "Agriculture",
+      "target_groups": [
+        "farmer"
+      ],
+      "eligibility": {
+        "occupation": [
+          "farmer"
+        ],
+        "agriculture_related": true
+      },
+      "benefit": {
+        "type": "subsidy_support",
+        "description": "Irrigation and water-use efficiency support"
+      },
+      "documents": [
+        "ID proof",
+        "land records",
+        "scheme-specific documents"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH005",
+      "name": "Soil Health Card Scheme",
+      "level": "Central",
+      "state": "All India",
+      "category": "Agriculture",
+      "target_groups": [
+        "farmer"
+      ],
+      "eligibility": {
+        "occupation": [
+          "farmer"
+        ]
+      },
+      "benefit": {
+        "type": "service",
+        "description": "Soil testing and nutrient recommendations"
+      },
+      "documents": [
+        "Farmer details",
+        "land details"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH006",
+      "name": "Namo Shetkari Mahasanman Nidhi Yojana",
+      "level": "State",
+      "state": "Maharashtra",
+      "category": "Agriculture",
+      "target_groups": [
+        "farmer",
+        "landholder"
+      ],
+      "eligibility": {
+        "occupation": [
+          "farmer"
+        ],
+        "landholding_on_cutoff_date": true,
+        "pm_kisan_eligible": true,
+        "state": "Maharashtra"
+      },
+      "benefit": {
+        "type": "financial_assistance",
+        "description": "₹6000 annual Maharashtra top-up; eligible PM-KISAN families can receive combined PM-KISAN + NSMNY support"
+      },
+      "documents": [
+        "Aadhaar",
+        "7/12",
+        "8-A",
+        "Ferfar",
+        "ration card where applicable",
+        "Aadhaar-linked bank account"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/schemes/namo-shetkari-mahasanman-nidhi-yojana",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH007",
+      "name": "Magel Tyala Shettale",
+      "level": "State",
+      "state": "Maharashtra",
+      "category": "Agriculture",
+      "target_groups": [
+        "farmer"
+      ],
+      "eligibility": {
+        "occupation": [
+          "farmer"
+        ],
+        "state": "Maharashtra",
+        "land_required": true
+      },
+      "benefit": {
+        "type": "subsidy",
+        "description": "Support for farm pond/water conservation"
+      },
+      "documents": [
+        "Aadhaar",
+        "7/12 extract",
+        "8-A extract",
+        "bank details"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH008",
+      "name": "Paramparagat Krishi Vikas Yojana",
+      "level": "Central",
+      "state": "All India",
+      "category": "Agriculture",
+      "target_groups": [
+        "farmer",
+        "farmer_group"
+      ],
+      "eligibility": {
+        "occupation": [
+          "farmer"
+        ],
+        "organic_farming_related": true
+      },
+      "benefit": {
+        "type": "financial_assistance",
+        "description": "Support for organic farming clusters"
+      },
+      "documents": [
+        "ID proof",
+        "land/farm details",
+        "group/cluster documents where applicable"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH009",
+      "name": "Pradhan Mantri Krishi Sinchayee Yojana - Per Drop More Crop",
+      "level": "Central",
+      "state": "All India",
+      "category": "Agriculture",
+      "target_groups": [
+        "farmer"
+      ],
+      "eligibility": {
+        "occupation": [
+          "farmer"
+        ],
+        "irrigation_related": true
+      },
+      "benefit": {
+        "type": "subsidy",
+        "description": "Micro-irrigation support"
+      },
+      "documents": [
+        "Aadhaar",
+        "land records",
+        "bank details"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH010",
+      "name": "National Agriculture Insurance Scheme",
+      "level": "Central",
+      "state": "Participating States/UTs",
+      "category": "Agriculture",
+      "target_groups": [
+        "farmer"
+      ],
+      "eligibility": {
+        "occupation": [
+          "farmer"
+        ],
+        "crop_related": true
+      },
+      "benefit": {
+        "type": "insurance",
+        "description": "Crop-loss protection under applicable coverage"
+      },
+      "documents": [
+        "ID proof",
+        "land/tenancy proof",
+        "crop sowing details",
+        "bank account"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/schemes/nai",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH011",
+      "name": "Pradhan Mantri Mudra Yojana",
+      "level": "Central",
+      "state": "All India",
+      "category": "Business",
+      "target_groups": [
+        "entrepreneur",
+        "micro_business"
+      ],
+      "eligibility": {
+        "business_activity": true
+      },
+      "benefit": {
+        "type": "credit",
+        "description": "Micro-enterprise business credit"
+      },
+      "documents": [
+        "Aadhaar",
+        "PAN",
+        "business/project documents",
+        "bank documents"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH012",
+      "name": "Stand-Up India",
+      "level": "Central",
+      "state": "All India",
+      "category": "Business",
+      "target_groups": [
+        "women",
+        "SC",
+        "ST",
+        "entrepreneur"
+      ],
+      "eligibility": {
+        "gender": [
+          "female"
+        ],
+        "or_social_category": [
+          "SC",
+          "ST"
+        ],
+        "greenfield_enterprise": true
+      },
+      "benefit": {
+        "type": "credit",
+        "description": "Bank loans for eligible greenfield enterprises"
+      },
+      "documents": [
+        "Aadhaar",
+        "PAN",
+        "caste certificate where applicable",
+        "project report",
+        "bank documents"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH013",
+      "name": "PM SVANidhi",
+      "level": "Central",
+      "state": "All India",
+      "category": "Employment",
+      "target_groups": [
+        "street_vendor"
+      ],
+      "eligibility": {
+        "occupation": [
+          "street_vendor"
+        ]
+      },
+      "benefit": {
+        "type": "credit",
+        "description": "Working-capital support for eligible street vendors"
+      },
+      "documents": [
+        "Aadhaar",
+        "vendor identification/certificate",
+        "bank details"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH014",
+      "name": "Pradhan Mantri Kaushal Vikas Yojana",
+      "level": "Central",
+      "state": "All India",
+      "category": "Skills",
+      "target_groups": [
+        "youth",
+        "job_seeker",
+        "student"
+      ],
+      "eligibility": {
+        "occupation": [
+          "student",
+          "job_seeker",
+          "unemployed"
+        ]
+      },
+      "benefit": {
+        "type": "training",
+        "description": "Skill development and certification"
+      },
+      "documents": [
+        "Aadhaar",
+        "education/identity documents"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH015",
+      "name": "National Apprenticeship Promotion Scheme",
+      "level": "Central",
+      "state": "All India",
+      "category": "Employment",
+      "target_groups": [
+        "apprentice",
+        "youth"
+      ],
+      "eligibility": {
+        "occupation": [
+          "student",
+          "job_seeker"
+        ],
+        "apprenticeship_candidate": true
+      },
+      "benefit": {
+        "type": "training",
+        "description": "Apprenticeship promotion and training support"
+      },
+      "documents": [
+        "Aadhaar",
+        "education documents",
+        "bank account"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH016",
+      "name": "Prime Minister's Employment Generation Programme",
+      "level": "Central",
+      "state": "All India",
+      "category": "Business",
+      "target_groups": [
+        "entrepreneur",
+        "unemployed"
+      ],
+      "eligibility": {
+        "self_employment": true,
+        "new_micro_enterprise": true
+      },
+      "benefit": {
+        "type": "subsidy_credit",
+        "description": "Credit-linked support for eligible new micro enterprises"
+      },
+      "documents": [
+        "Aadhaar",
+        "PAN",
+        "project report",
+        "bank documents"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH017",
+      "name": "PM Vishwakarma",
+      "level": "Central",
+      "state": "All India",
+      "category": "Skills and Employment",
+      "target_groups": [
+        "artisan",
+        "craftsperson"
+      ],
+      "eligibility": {
+        "occupation": [
+          "artisan",
+          "craftsperson"
+        ],
+        "not_salaried_government_employee": true
+      },
+      "benefit": {
+        "type": "training_credit_toolkit",
+        "description": "Training, toolkit, digital and credit support for eligible artisans"
+      },
+      "documents": [
+        "Aadhaar",
+        "occupation details",
+        "bank account"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH018",
+      "name": "Startup India",
+      "level": "Central",
+      "state": "All India",
+      "category": "Business",
+      "target_groups": [
+        "startup",
+        "entrepreneur"
+      ],
+      "eligibility": {
+        "startup_entity": true
+      },
+      "benefit": {
+        "type": "startup_support",
+        "description": "Startup recognition and associated benefits"
+      },
+      "documents": [
+        "Entity incorporation documents",
+        "PAN",
+        "business documents"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH019",
+      "name": "Maharashtra Chief Minister Employment Generation Programme",
+      "level": "State",
+      "state": "Maharashtra",
+      "category": "Employment",
+      "target_groups": [
+        "entrepreneur",
+        "unemployed"
+      ],
+      "eligibility": {
+        "state": "Maharashtra",
+        "self_employment": true
+      },
+      "benefit": {
+        "type": "financial_assistance",
+        "description": "Support for self-employment/micro enterprise"
+      },
+      "documents": [
+        "Aadhaar",
+        "PAN",
+        "project documents",
+        "bank account"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH020",
+      "name": "National Career Service",
+      "level": "Central",
+      "state": "All India",
+      "category": "Employment",
+      "target_groups": [
+        "job_seeker",
+        "student",
+        "worker"
+      ],
+      "eligibility": {},
+      "benefit": {
+        "type": "service",
+        "description": "Career, vacancy and employment services"
+      },
+      "documents": [
+        "Basic identity and education/employment details"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH021",
+      "name": "Central Sector Scheme of Scholarship for College and University Students",
+      "level": "Central",
+      "state": "All India",
+      "category": "Education",
+      "target_groups": [
+        "student"
+      ],
+      "eligibility": {
+        "occupation": [
+          "student"
+        ],
+        "academic_merit_required": true
+      },
+      "benefit": {
+        "type": "scholarship",
+        "description": "Higher-education scholarship for eligible students"
+      },
+      "documents": [
+        "Academic records",
+        "income certificate",
+        "bank account",
+        "identity documents"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH022",
+      "name": "National Means-cum-Merit Scholarship Scheme",
+      "level": "Central",
+      "state": "All India",
+      "category": "Education",
+      "target_groups": [
+        "school_student"
+      ],
+      "eligibility": {
+        "occupation": [
+          "student"
+        ],
+        "academic_merit_required": true,
+        "income_limit": 300000
+      },
+      "benefit": {
+        "type": "scholarship",
+        "description": "Scholarship support for eligible school students"
+      },
+      "documents": [
+        "Academic records",
+        "income certificate",
+        "identity documents"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH023",
+      "name": "Post-Matric Scholarship for SC Students",
+      "level": "Central",
+      "state": "All India",
+      "category": "Education",
+      "target_groups": [
+        "SC",
+        "student"
+      ],
+      "eligibility": {
+        "occupation": [
+          "student"
+        ],
+        "social_category": [
+          "SC"
+        ],
+        "post_matric": true
+      },
+      "benefit": {
+        "type": "scholarship",
+        "description": "Financial assistance for post-matric education"
+      },
+      "documents": [
+        "Caste certificate",
+        "income certificate",
+        "academic records",
+        "Aadhaar"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH024",
+      "name": "Post-Matric Scholarship for ST Students",
+      "level": "Central",
+      "state": "All India",
+      "category": "Education",
+      "target_groups": [
+        "ST",
+        "student"
+      ],
+      "eligibility": {
+        "occupation": [
+          "student"
+        ],
+        "social_category": [
+          "ST"
+        ],
+        "post_matric": true
+      },
+      "benefit": {
+        "type": "scholarship",
+        "description": "Financial assistance for post-matric education"
+      },
+      "documents": [
+        "Tribe certificate",
+        "income certificate",
+        "academic records",
+        "Aadhaar"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH025",
+      "name": "Post-Matric Scholarship for OBC Students",
+      "level": "Central",
+      "state": "All India",
+      "category": "Education",
+      "target_groups": [
+        "OBC",
+        "student"
+      ],
+      "eligibility": {
+        "occupation": [
+          "student"
+        ],
+        "social_category": [
+          "OBC"
+        ],
+        "post_matric": true
+      },
+      "benefit": {
+        "type": "scholarship",
+        "description": "Financial assistance for post-matric education"
+      },
+      "documents": [
+        "Caste certificate",
+        "income certificate",
+        "academic records",
+        "Aadhaar"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH026",
+      "name": "Post-Matric Scholarship to VJNT Students - Maharashtra",
+      "level": "State",
+      "state": "Maharashtra",
+      "category": "Education",
+      "target_groups": [
+        "VJNT",
+        "student"
+      ],
+      "eligibility": {
+        "occupation": [
+          "student"
+        ],
+        "social_category": [
+          "VJNT"
+        ],
+        "state": "Maharashtra",
+        "post_matric": true
+      },
+      "benefit": {
+        "type": "scholarship",
+        "description": "Tuition fees, examination fees and maintenance allowance"
+      },
+      "documents": [
+        "VJNT certificate",
+        "income certificate",
+        "academic records",
+        "Aadhaar"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/schemes/pmsvs-maharashtra",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH027",
+      "name": "Rajarshi Chhatrapati Shahu Maharaj Shikshan Shulkh Shishyavrutti",
+      "level": "State",
+      "state": "Maharashtra",
+      "category": "Education",
+      "target_groups": [
+        "student"
+      ],
+      "eligibility": {
+        "occupation": [
+          "student"
+        ],
+        "state": "Maharashtra",
+        "income_criteria": true
+      },
+      "benefit": {
+        "type": "scholarship",
+        "description": "Education fee assistance for eligible students"
+      },
+      "documents": [
+        "Income certificate",
+        "academic records",
+        "Aadhaar",
+        "domicile/residence proof"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH028",
+      "name": "National Overseas Scholarship",
+      "level": "Central",
+      "state": "All India",
+      "category": "Education",
+      "target_groups": [
+        "student"
+      ],
+      "eligibility": {
+        "occupation": [
+          "student"
+        ],
+        "overseas_study": true,
+        "academic_criteria": true
+      },
+      "benefit": {
+        "type": "scholarship",
+        "description": "Financial support for eligible overseas higher studies"
+      },
+      "documents": [
+        "Academic records",
+        "admission/offer documents",
+        "income/category documents",
+        "identity documents"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH029",
+      "name": "EBC Scholarship - Maharashtra",
+      "level": "State",
+      "state": "Maharashtra",
+      "category": "Education",
+      "target_groups": [
+        "EBC",
+        "student"
+      ],
+      "eligibility": {
+        "occupation": [
+          "student"
+        ],
+        "state": "Maharashtra",
+        "social_category": [
+          "EBC"
+        ]
+      },
+      "benefit": {
+        "type": "scholarship",
+        "description": "Educational financial assistance"
+      },
+      "documents": [
+        "Income certificate",
+        "academic records",
+        "identity documents"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH030",
+      "name": "Ayushman Bharat - Pradhan Mantri Jan Arogya Yojana",
+      "level": "Central",
+      "state": "All India",
+      "category": "Health",
+      "target_groups": [
+        "eligible_household"
+      ],
+      "eligibility": {
+        "scheme_database_eligibility": true
+      },
+      "benefit": {
+        "type": "health_cover",
+        "description": "Hospitalization cover for eligible beneficiary families"
+      },
+      "documents": [
+        "Aadhaar or accepted identity",
+        "beneficiary/family eligibility record"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/hi/schemes/ab-pmjay",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH031",
+      "name": "Pradhan Mantri Matru Vandana Yojana",
+      "level": "Central",
+      "state": "All India",
+      "category": "Women and Child",
+      "target_groups": [
+        "pregnant_woman",
+        "lactating_mother"
+      ],
+      "eligibility": {
+        "gender": [
+          "female"
+        ],
+        "pregnancy_or_lactation": true
+      },
+      "benefit": {
+        "type": "maternity_benefit",
+        "description": "Maternity-related financial support for eligible beneficiaries"
+      },
+      "documents": [
+        "Aadhaar",
+        "bank/post-office account",
+        "pregnancy/child records"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH032",
+      "name": "Janani Suraksha Yojana",
+      "level": "Central",
+      "state": "All India",
+      "category": "Health",
+      "target_groups": [
+        "pregnant_woman"
+      ],
+      "eligibility": {
+        "gender": [
+          "female"
+        ],
+        "pregnancy": true,
+        "institutional_delivery_related": true
+      },
+      "benefit": {
+        "type": "maternity_assistance",
+        "description": "Maternity assistance linked to eligible deliveries"
+      },
+      "documents": [
+        "Identity documents",
+        "pregnancy/delivery records",
+        "bank details"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH033",
+      "name": "Mahatma Jyotirao Phule Jan Arogya Yojana",
+      "level": "State",
+      "state": "Maharashtra",
+      "category": "Health",
+      "target_groups": [
+        "eligible_family"
+      ],
+      "eligibility": {
+        "state": "Maharashtra",
+        "scheme_eligibility_record": true
+      },
+      "benefit": {
+        "type": "health_cover",
+        "description": "Cashless health services for eligible beneficiaries"
+      },
+      "documents": [
+        "Aadhaar",
+        "ration/eligibility documents",
+        "identity proof"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH034",
+      "name": "Pradhan Mantri Awas Yojana - Urban 2.0",
+      "level": "Central",
+      "state": "All India",
+      "category": "Housing",
+      "target_groups": [
+        "urban_household"
+      ],
+      "eligibility": {
+        "urban_resident": true,
+        "annual_income_max": 1800000,
+        "pucca_house_owned": false,
+        "previous_government_housing_benefit": false
+      },
+      "benefit": {
+        "type": "housing_assistance",
+        "description": "Housing assistance under applicable PMAY-U 2.0 vertical"
+      },
+      "documents": [
+        "Aadhaar",
+        "income proof",
+        "address proof",
+        "bank details",
+        "housing/property documents"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/schemes/pmay-u",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH035",
+      "name": "Pradhan Mantri Awas Yojana - Gramin",
+      "level": "Central",
+      "state": "All India",
+      "category": "Housing",
+      "target_groups": [
+        "rural_household"
+      ],
+      "eligibility": {
+        "rural_resident": true,
+        "housing_deprivation_criteria": true
+      },
+      "benefit": {
+        "type": "housing_assistance",
+        "description": "Rural housing assistance for eligible households"
+      },
+      "documents": [
+        "Aadhaar",
+        "residence/household details",
+        "bank account"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH036",
+      "name": "Pradhan Mantri Ujjwala Yojana",
+      "level": "Central",
+      "state": "All India",
+      "category": "Energy",
+      "target_groups": [
+        "woman",
+        "eligible_household"
+      ],
+      "eligibility": {
+        "gender": [
+          "female"
+        ],
+        "eligible_household": true
+      },
+      "benefit": {
+        "type": "lpg_connection",
+        "description": "LPG connection support for eligible households"
+      },
+      "documents": [
+        "Aadhaar",
+        "address proof",
+        "bank details",
+        "household/ration details"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH037",
+      "name": "Jal Jeevan Mission",
+      "level": "Central",
+      "state": "All India",
+      "category": "Water",
+      "target_groups": [
+        "rural_household"
+      ],
+      "eligibility": {
+        "rural_resident": true
+      },
+      "benefit": {
+        "type": "public_service",
+        "description": "Household tap-water infrastructure under the mission"
+      },
+      "documents": [
+        "Residence/household information"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH038",
+      "name": "Swachh Bharat Mission - Gramin",
+      "level": "Central",
+      "state": "All India",
+      "category": "Sanitation",
+      "target_groups": [
+        "rural_household"
+      ],
+      "eligibility": {
+        "rural_resident": true,
+        "sanitation_need": true
+      },
+      "benefit": {
+        "type": "sanitation_support",
+        "description": "Rural sanitation support"
+      },
+      "documents": [
+        "Residence/household details"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH039",
+      "name": "Pradhan Mantri Jan Dhan Yojana",
+      "level": "Central",
+      "state": "All India",
+      "category": "Financial Inclusion",
+      "target_groups": [
+        "unbanked",
+        "citizen"
+      ],
+      "eligibility": {
+        "bank_account_needed": true
+      },
+      "benefit": {
+        "type": "banking_service",
+        "description": "Basic banking and financial inclusion"
+      },
+      "documents": [
+        "Aadhaar or accepted identity/address proof"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH040",
+      "name": "Pradhan Mantri Jeevan Jyoti Bima Yojana",
+      "level": "Central",
+      "state": "All India",
+      "category": "Insurance",
+      "target_groups": [
+        "citizen"
+      ],
+      "eligibility": {
+        "bank_account": true,
+        "age_band_required": true
+      },
+      "benefit": {
+        "type": "life_insurance",
+        "description": "Low-cost life insurance cover for eligible account holders"
+      },
+      "documents": [
+        "Aadhaar",
+        "bank account"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH041",
+      "name": "Pradhan Mantri Suraksha Bima Yojana",
+      "level": "Central",
+      "state": "All India",
+      "category": "Insurance",
+      "target_groups": [
+        "citizen"
+      ],
+      "eligibility": {
+        "bank_account": true,
+        "age_band_required": true
+      },
+      "benefit": {
+        "type": "accident_insurance",
+        "description": "Accident insurance cover for eligible account holders"
+      },
+      "documents": [
+        "Aadhaar",
+        "bank account"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH042",
+      "name": "Atal Pension Yojana",
+      "level": "Central",
+      "state": "All India",
+      "category": "Pension",
+      "target_groups": [
+        "worker",
+        "citizen"
+      ],
+      "eligibility": {
+        "bank_account": true,
+        "age_band_required": true
+      },
+      "benefit": {
+        "type": "pension",
+        "description": "Pension scheme with contribution-based benefits"
+      },
+      "documents": [
+        "Aadhaar",
+        "bank account"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH043",
+      "name": "National Social Assistance Programme",
+      "level": "Central",
+      "state": "All India",
+      "category": "Social Welfare",
+      "target_groups": [
+        "elderly",
+        "widow",
+        "disabled",
+        "destitute"
+      ],
+      "eligibility": {
+        "social_assistance_need": true,
+        "income_or_bpl_criteria": true
+      },
+      "benefit": {
+        "type": "social_assistance",
+        "description": "Social assistance pensions/support under applicable components"
+      },
+      "documents": [
+        "Aadhaar",
+        "income/BPL-related documents",
+        "bank account"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH044",
+      "name": "Sukanya Samriddhi Yojana",
+      "level": "Central",
+      "state": "All India",
+      "category": "Women and Child",
+      "target_groups": [
+        "girl_child"
+      ],
+      "eligibility": {
+        "girl_child": true,
+        "age_criteria_applies": true
+      },
+      "benefit": {
+        "type": "savings",
+        "description": "Government-backed savings account for eligible girl children"
+      },
+      "documents": [
+        "Girl child's birth certificate",
+        "guardian identity/address proof"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH045",
+      "name": "Beti Bachao Beti Padhao",
+      "level": "Central",
+      "state": "All India",
+      "category": "Women and Child",
+      "target_groups": [
+        "girl_child",
+        "family"
+      ],
+      "eligibility": {
+        "girl_child": true
+      },
+      "benefit": {
+        "type": "programme_support",
+        "description": "Girl-child protection, education and empowerment programme"
+      },
+      "documents": [
+        "Scheme/programme-specific documents"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH046",
+      "name": "Lek Ladki Yojana",
+      "level": "State",
+      "state": "Maharashtra",
+      "category": "Women and Child",
+      "target_groups": [
+        "girl_child",
+        "eligible_family"
+      ],
+      "eligibility": {
+        "state": "Maharashtra",
+        "girl_child": true,
+        "income_criteria": true
+      },
+      "benefit": {
+        "type": "financial_assistance",
+        "description": "Financial assistance for eligible girl children/families"
+      },
+      "documents": [
+        "Birth certificate",
+        "income certificate",
+        "residence proof",
+        "Aadhaar"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH047",
+      "name": "Mukhyamantri Majhi Ladki Bahin Yojana",
+      "level": "State",
+      "state": "Maharashtra",
+      "category": "Women",
+      "target_groups": [
+        "woman"
+      ],
+      "eligibility": {
+        "gender": [
+          "female"
+        ],
+        "state": "Maharashtra",
+        "income_criteria": true
+      },
+      "benefit": {
+        "type": "financial_assistance",
+        "description": "Financial assistance for eligible women"
+      },
+      "documents": [
+        "Aadhaar",
+        "bank account",
+        "residence/income documents"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH048",
+      "name": "Sanjay Gandhi Niradhar Anudan Yojana",
+      "level": "State",
+      "state": "Maharashtra",
+      "category": "Social Welfare",
+      "target_groups": [
+        "elderly",
+        "widow",
+        "disabled",
+        "destitute"
+      ],
+      "eligibility": {
+        "state": "Maharashtra",
+        "social_assistance_need": true
+      },
+      "benefit": {
+        "type": "financial_assistance",
+        "description": "Monthly assistance for eligible persons without adequate support"
+      },
+      "documents": [
+        "Aadhaar",
+        "income certificate",
+        "bank account",
+        "category/status documents"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH049",
+      "name": "Swarnima",
+      "level": "State",
+      "state": "Maharashtra",
+      "category": "Employment",
+      "target_groups": [
+        "OBC",
+        "woman",
+        "entrepreneur"
+      ],
+      "eligibility": {
+        "gender": [
+          "female"
+        ],
+        "social_category": [
+          "OBC"
+        ],
+        "state": "Maharashtra",
+        "min_age": 18,
+        "max_age": 50,
+        "self_employment": true
+      },
+      "benefit": {
+        "type": "low_interest_loan",
+        "description": "Low-interest support for self-employment; current myScheme page describes up to ₹5 lakh per SHG project"
+      },
+      "documents": [
+        "Aadhaar",
+        "Maharashtra domicile/residence certificate",
+        "bank details",
+        "age proof",
+        "project documents"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/schemes/sma",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    },
+    {
+      "id": "SCH050",
+      "name": "National Career Service",
+      "level": "Central",
+      "state": "All India",
+      "category": "Employment",
+      "target_groups": [
+        "job_seeker",
+        "student",
+        "worker"
+      ],
+      "eligibility": {},
+      "benefit": {
+        "type": "service",
+        "description": "Career counselling, job search and employment services"
+      },
+      "documents": [
+        "Basic identity",
+        "education/employment details"
+      ],
+      "conflicts": [],
+      "source_url": "https://www.myscheme.gov.in/",
+      "data_status": "hackathon_seed",
+      "verification_note": "Verify current detailed eligibility, exclusions, benefit amount and application requirements on the official source before production use."
+    }
+  ]
+}
