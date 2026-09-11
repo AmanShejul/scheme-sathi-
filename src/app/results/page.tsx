@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { useSchemeSathi } from "@/frontend/context/SchemeSathiContext";
+import { resolveSchemeName, userFacingAnalysisError } from "@/frontend/utils/presentation";
 
 export default function ResultsPage() {
   const { analysisComplete, hydrated, error, eligibilityResults, conflicts, recommendedBundle, schemes, missingDocuments, selectScheme } = useSchemeSathi();
@@ -14,7 +15,7 @@ export default function ResultsPage() {
         <main className="mx-auto w-full max-w-4xl px-6 py-12 sm:px-10 sm:py-16 lg:px-12">
           <p className="text-base font-bold text-primary">Results</p>
           <h1 className="mt-3 text-4xl font-bold leading-tight text-foreground sm:text-5xl">No analysis result yet</h1>
-          <p className="mt-5 text-lg leading-8 text-muted-foreground">{error ?? "Complete your profile and run an analysis to see results."}</p>
+          <p className="mt-5 text-lg leading-8 text-muted-foreground">{userFacingAnalysisError(error) ?? "Complete your profile to view your results."}</p>
           <Button asChild className="mt-8"><Link href="/find-benefits">Start analysis</Link></Button>
         </main>
       </div>
@@ -57,7 +58,7 @@ export default function ResultsPage() {
           <div className="flex items-end justify-between gap-4 border-b border-border pb-4">
             <div>
               <h2 id="eligible-heading" className="text-xl font-bold text-foreground">Potentially Eligible</h2>
-              <p className="mt-2 text-sm text-muted-foreground">Results based on the completed local profile and scheme data.</p>
+              <p className="mt-2 text-sm text-muted-foreground">Based on the information you provided and the scheme records available to us.</p>
             </div>
           </div>
           <div className="mt-5 border border-border">
@@ -90,15 +91,24 @@ export default function ResultsPage() {
           </div>
         </section>
 
+        <section className="mt-14" aria-labelledby="why-heading">
+          <h2 id="why-heading" className="border-b border-border pb-4 text-xl font-bold text-foreground">Why these may fit you</h2>
+          <div className="mt-5 border border-border px-5 py-5 sm:px-7">
+            {potentiallyEligibleSchemes.length > 0 ? <ul className="list-disc space-y-2 pl-5 text-sm text-muted-foreground">
+              {potentiallyEligibleSchemes.flatMap(({ scheme, result }) => result.reasons.map((reason) => <li key={`${scheme!.id}-${reason}`}>{reason}</li>))}
+            </ul> : <p className="text-sm text-muted-foreground">No potentially eligible schemes were returned for this profile.</p>}
+          </div>
+        </section>
+
         <section className="mt-14" aria-labelledby="conflicts-heading">
-          <h2 id="conflicts-heading" className="border-b border-border pb-4 text-xl font-bold text-foreground">Conflicts</h2>
+          <h2 id="conflicts-heading" className="border-b border-border pb-4 text-xl font-bold text-foreground">Compatibility and conflicts</h2>
           <div className="mt-5 border border-border px-5 py-5 sm:px-7">
             {conflicts.length > 0 ? conflicts.map((conflict) => (
               <div key={`${conflict.schemeAId}-${conflict.schemeBId}`}>
-                <p className="font-bold text-foreground">{schemes.find((scheme) => scheme.id === conflict.schemeAId)?.name} <span className="font-normal text-muted-foreground">and</span> {schemes.find((scheme) => scheme.id === conflict.schemeBId)?.name}</p>
+                <p className="font-bold text-foreground">{resolveSchemeName(schemes, conflict.schemeAId)} <span className="font-normal text-muted-foreground">and</span> {resolveSchemeName(schemes, conflict.schemeBId)}</p>
                 <p className="mt-2 text-sm text-muted-foreground">{conflict.reason}</p>
               </div>
-            )) : <p className="text-sm text-muted-foreground">No configured conflicts were found.</p>}
+            )) : <p className="text-sm text-muted-foreground">No explicit conflicts were found among the potentially eligible schemes.</p>}
           </div>
         </section>
 
@@ -107,7 +117,7 @@ export default function ResultsPage() {
           <div className="mt-5 border border-border px-5 py-5 sm:px-7">
             {otherResults.length > 0 ? otherResults.map((result) => (
               <div key={result.schemeId} className="border-b border-border py-3 last:border-b-0 first:pt-0 last:pb-0">
-                <p className="font-bold text-muted-foreground">{schemes.find((scheme) => scheme.id === result.schemeId)?.name ?? result.schemeId}</p>
+                <p className="font-bold text-muted-foreground">{resolveSchemeName(schemes, result.schemeId)}</p>
                 <p className="mt-2 text-sm text-muted-foreground">{result.status === "insufficient_data" ? "Insufficient information" : "Not eligible"}: {result.reasons.join(" ") || "No additional explanation was returned."}</p>
               </div>
             )) : <p className="text-sm text-muted-foreground">No other eligibility outcomes were recorded.</p>}
@@ -115,18 +125,17 @@ export default function ResultsPage() {
         </section>
 
         <section className="mt-14 border-y border-border bg-[#fffaf6] px-5 py-7 sm:px-7" aria-labelledby="bundle-heading">
-          <p className="text-sm font-bold text-primary">Recommended Bundle</p>
-          <h2 id="bundle-heading" className="mt-2 text-2xl font-bold text-foreground">{recommendedBundle?.name ?? "No bundle available"}</h2>
-          <p className="mt-3 text-sm text-muted-foreground">Included schemes: {recommendedBundle?.schemeIds.map((id) => schemes.find((scheme) => scheme.id === id)?.name).filter(Boolean).join(", ") || "None"}</p>
-          <p className="mt-2 text-sm text-muted-foreground">Score: {recommendedBundle?.score ?? "Not available"}</p>
+          <p className="text-sm font-bold text-primary">Recommended Benefit Combination</p>
+          <h2 id="bundle-heading" className="mt-2 text-2xl font-bold text-foreground">{recommendedBundle?.name ?? "No recommended combination yet"}</h2>
+          <p className="mt-3 text-sm text-muted-foreground">Included schemes: {recommendedBundle?.schemeIds.map((id) => resolveSchemeName(schemes, id)).join(", ") || "None yet"}</p>
           {recommendedBundle?.reasons.map((reason) => <p key={reason} className="mt-2 text-sm text-muted-foreground">{reason}</p>)}
-          {recommendedBundle && <Button asChild className="mt-6"><Link href="/results/bundle">View Bundle</Link></Button>}
+          {recommendedBundle ? <Button asChild className="mt-6"><Link href="/results/bundle">View Recommended Combination</Link></Button> : <Button asChild variant="outline" className="mt-6"><Link href="/find-benefits">Review your profile</Link></Button>}
         </section>
 
         <section className="mt-14 border-t border-border pt-7" aria-labelledby="next-step-heading">
           <p className="text-sm font-bold text-primary">Next Step</p>
-          <h2 id="next-step-heading" className="mt-2 text-2xl font-bold text-foreground">Continue to Documents</h2>
-          <p className="mt-2 text-sm text-muted-foreground">{missingDocuments.length} document gap{missingDocuments.length === 1 ? "" : "s"} identified from your profile.</p>
+          <h2 id="next-step-heading" className="mt-2 text-2xl font-bold text-foreground">Documents you still need</h2>
+          <p className="mt-2 text-sm text-muted-foreground">{missingDocuments.filter((document) => document.status === "missing").length} document{missingDocuments.filter((document) => document.status === "missing").length === 1 ? "" : "s"} were not marked available for the recommended combination.</p>
           <Button asChild variant="outline" className="mt-5">
             <Link href="/results/documents">View Document Readiness</Link>
           </Button>

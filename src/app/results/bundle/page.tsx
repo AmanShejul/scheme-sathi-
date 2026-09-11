@@ -11,6 +11,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { useSchemeSathi } from "@/frontend/context/SchemeSathiContext";
+import { userFacingAnalysisError } from "@/frontend/utils/presentation";
 
 export default function BundlePage() {
   const { analysisComplete, hydrated, error, recommendedBundle, schemes } = useSchemeSathi();
@@ -21,7 +22,7 @@ export default function BundlePage() {
         <div className="mx-auto max-w-3xl">
           <p className="text-sm font-bold uppercase tracking-[0.14em] text-primary">Recommended bundle</p>
           <h1 className="mt-3 text-4xl font-bold">No bundle available</h1>
-          <p className="mt-5 text-muted-foreground">{error ?? "Run an analysis to generate a compatible candidate bundle."}</p>
+          <p className="mt-5 text-muted-foreground">{userFacingAnalysisError(error)}</p>
           <Button asChild className="mt-8"><Link href="/results">Back to Results</Link></Button>
         </div>
       </main>
@@ -106,18 +107,11 @@ export default function BundlePage() {
                   </p>
                 </div>
 
-                <div className="border border-border p-5">
-                  <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
-                    Bundle score
-                  </p>
-
-                  <p className="mt-2 text-2xl font-bold">
-                    {recommendedBundle?.score ?? "—"}
-                  </p>
-
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Based on the current local evaluation
-                  </p>
+                <div className="border border-border bg-[#fffaf6] p-5">
+                  <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">Why it was selected</p>
+                  <div className="mt-2 space-y-2 text-sm leading-6 text-foreground">
+                    {recommendedBundle.reasons.map((reason) => <p key={reason}>{reason}</p>)}
+                  </div>
                 </div>
               </div>
 
@@ -193,8 +187,8 @@ export default function BundlePage() {
             </div>
 
             <p className="mt-4 text-sm leading-6 text-muted-foreground">
-              This recommendation is generated from the current local
-              eligibility and compatibility evaluation. It is not an official
+              This recommendation is based on the information you provided
+              and the scheme records available to us. It is not an official
               government decision.
             </p>
 

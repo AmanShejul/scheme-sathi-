@@ -13,11 +13,11 @@ const trustPoints = [
     icon: LockKeyhole,
     title: "Your information",
     description:
-      "Used only to evaluate the benefit criteria in this flow.",
+      "Used only to compare your answers with the available scheme criteria.",
   },
   {
     icon: ShieldCheck,
-    title: "Rule-based evaluation",
+    title: "Clear criteria",
     description:
       "Results are based on the information you provide.",
   },
@@ -136,7 +136,7 @@ export default function FindBenefitsPage() {
                   className="size-4 text-primary"
                   aria-hidden="true"
                 />
-                Secure profile setup
+                Profile setup
               </div>
 
               <p className="text-sm font-bold uppercase tracking-[0.14em] text-primary">

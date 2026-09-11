@@ -50,11 +50,11 @@ const features = [
   {
     title: "Find relevant schemes",
     description:
-      "Discover government benefits matched to your profile.",
+      "Discover government benefits that may be relevant to your profile.",
     icon: Search,
   },
   {
-    title: "Check eligibility",
+    title: "Understand potential fit",
     description:
       "See why a scheme may or may not fit your profile.",
     icon: ClipboardCheck,
@@ -229,7 +229,7 @@ export default function Home() {
                   className="scheme-fade-up mt-5 max-w-4xl text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl"
                   style={{ animationDelay: "0.2s" }}
                 >
-                  Find the right combination of government benefits.
+                  Find a potentially relevant combination of government benefits.
                 </h1>
 
                 <p
@@ -271,7 +271,7 @@ export default function Home() {
                   className="scheme-fade-up mt-5 text-sm text-muted-foreground"
                   style={{ animationDelay: "0.5s" }}
                 >
-                  Eligibility results are indicative. Final eligibility is
+                  Potential matches are indicative. Final eligibility is
                   confirmed by the official authority.
                 </p>
               </div>

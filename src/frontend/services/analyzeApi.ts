@@ -28,23 +28,22 @@ export async function analyzeCitizen(
       body: JSON.stringify({ citizenProfile, availableDocuments }),
     });
   } catch {
-    throw new Error("We could not reach the analysis service. Check your connection and try again.");
+    throw new Error("We could not reach the analysis. Check your connection and try again.");
   }
 
   let payload: unknown;
   try {
     payload = await response.json();
   } catch {
-    throw new Error("The analysis service returned an unreadable response. Please try again.");
+    throw new Error("The analysis returned an unreadable response. Please try again.");
   }
 
   if (!response.ok) {
-    const errorMessage = isObject(payload) && isObject(payload.error) && typeof payload.error.message === "string" ? payload.error.message : "The analysis could not be completed.";
-    throw new Error(response.status >= 500 ? "The analysis service is temporarily unavailable. Please try again." : errorMessage);
+    throw new Error(response.status >= 500 ? "The analysis is temporarily unavailable. Please try again." : "Please check your profile details and try again.");
   }
 
   if (!isAnalysisResponse(payload)) {
-    throw new Error("The analysis service returned an incomplete result. Please try again.");
+    throw new Error("The analysis returned incomplete results. Please try again.");
   }
 
   return payload;

@@ -35,19 +35,19 @@ export default function AnalysisPage() {
     { label: "Schemes Evaluated", value: String(eligibilityResults.length) },
     { label: "Potentially Eligible", value: String(eligibilityResults.filter((result) => result.status === "potentially_eligible").length) },
     { label: "Conflicts", value: String(conflicts.length) },
-    { label: "Compatible Schemes", value: String(recommendedBundle?.schemeIds.length ?? 0) },
+    { label: "Recommended Schemes", value: String(recommendedBundle?.schemeIds.length ?? 0) },
   ];
 
   return (
     <div className="min-h-screen bg-background">
       <main className="mx-auto w-full max-w-5xl px-6 py-12 sm:px-10 sm:py-16 lg:px-12">
         <div className="max-w-2xl">
-          <p className="text-base font-bold text-primary">Analysis in progress</p>
+          <p className="text-base font-bold text-primary">{loading ? "Analysis in progress" : error ? "Analysis needs attention" : "Analysis complete"}</p>
           <h1 className="mt-3 text-4xl font-bold leading-tight text-foreground sm:text-5xl">
-            Analyzing your benefits
+            {loading ? "Analyzing your benefits" : error ? "We could not complete your analysis" : "Your analysis is ready"}
           </h1>
           <p className="mt-5 text-lg leading-8 text-muted-foreground">
-            {loading ? "Checking your profile against the scheme knowledge base." : "Your local analysis is ready to review."}
+            {loading ? "Checking the information you provided against the available scheme records." : error ? "Review your profile and try again." : "Review the schemes that may be relevant to you."}
           </p>
         </div>
 
